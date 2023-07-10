@@ -37,15 +37,10 @@ contract EnterLotteryTest is Test {
         enterLottery.playerDeposit{value: SEND_VALUE}();
     }
 
-    function testLotteryEndingThreshold() public funded {
-        uint256 currentLotteryBalance = address(enterLottery).balance;
-        assert(
-            currentLotteryBalance <= enterLottery.getLotteryEndingThreshold()
-        );
+    function testIfAddressHasAlreadyEnteredLottery() public funded {
+        //  address listOfLotteryPlayers = enterLottery.getListOfLotteryPlayers(0);
+        vm.expectRevert();
+        vm.prank(USER);
+        enterLottery.playerDeposit{value: SEND_VALUE}();
     }
-
-    // function testPlayerDeposit() public funded {
-    //     uint256 currentLotteryBalance = address(enterLottery).balance;
-    //     assertEq(currentLotteryBalance, SEND_VALUE);
-    // }
 }

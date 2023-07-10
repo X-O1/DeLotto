@@ -7,7 +7,6 @@ import {EthPriceConverter} from "./EthPriceConverter.sol";
 contract EnterLottery {
     using EthPriceConverter for uint256;
 
-    address private s_player;
     address[] private s_listOfLotteryPlayers;
     mapping(address => uint256) private s_checkIfPlayerEntered;
     uint256 public currentLotteryBalance = address(this).balance;
@@ -27,7 +26,7 @@ contract EnterLottery {
         );
         for (uint256 i = 0; i < s_listOfLotteryPlayers.length; i++) {
             require(
-                s_player != s_listOfLotteryPlayers[i],
+                msg.sender != s_listOfLotteryPlayers[i],
                 "This address was already used. 1 entry per address."
             );
         }
@@ -38,7 +37,6 @@ contract EnterLottery {
         );
         s_checkIfPlayerEntered[msg.sender] += msg.value;
         s_listOfLotteryPlayers.push(msg.sender);
-        // }
     }
 
     //GETTERS
