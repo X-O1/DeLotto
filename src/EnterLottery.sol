@@ -13,28 +13,25 @@ contract EnterLottery {
     uint256 public currentLotteryBalance = address(this).balance;
     uint256 private TICKET_COST_MINIMUM = 20 * 10 ** 18;
     uint256 public LOTTERY_ENDING_THRESHOLD = 20 ether;
+    uint256 private MAX_DEPOSIT = LOTTERY_ENDING_THRESHOLD;
     AggregatorV3Interface private s_priceFeed;
-    bool public isLotteryActive;
 
     constructor(address priceFeed) {
         s_priceFeed = AggregatorV3Interface(priceFeed);
     }
 
     function playerDeposit() public payable {
-        if (currentLotteryBalance < LOTTERY_ENDING_THRESHOLD) {
-            isLotteryActive = true;
-        } else if (currentLotteryBalance >= LOTTERY_ENDING_THRESHOLD) {
-            isLotteryActive = false;
-        }
-        // for (uint256 i = 0; i < s_listOfLotteryPlayers.length; i++) {
         require(
-            isLotteryActive == true,
+            address(this).balance <= LOTTERY_ENDING_THRESHOLD,
             "Lottery is not active, threshold met."
         );
-        // require(
-        //     s_player != s_listOfLotteryPlayers[i],
-        //     "This address was already used. 1 entry per address."
-        // );
+        for (uint256 i = 0; i < s_listOfLotteryPlayers.length; i++) {
+            require(
+                s_player != s_listOfLotteryPlayers[i],
+                "This address was already used. 1 entry per address."
+            );
+        }
+        require(msg.value <= MAX_DEPOSIT, "Ether max deposit limit reached!");
         require(
             msg.value.getConversionRate(s_priceFeed) >= TICKET_COST_MINIMUM,
             "Not enough Eth deposited!"
@@ -59,9 +56,5 @@ contract EnterLottery {
 
     function getLotteryEndingThreshold() external view returns (uint256) {
         return LOTTERY_ENDING_THRESHOLD;
-    }
-
-    function getIsLotteryActive() external view returns (bool) {
-        return isLotteryActive;
     }
 }
