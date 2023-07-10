@@ -10,8 +10,8 @@ contract EnterLotteryTest is Test {
 
     address USER = makeAddr("user");
     address USER2 = makeAddr("user2");
-    uint256 constant STARTING_BALANCE = 25 ether;
-    uint256 constant SEND_VALUE = 5 ether;
+    uint256 private constant STARTING_BALANCE = 25 ether;
+    uint256 private constant SEND_VALUE = 5 ether;
 
     function setUp() external {
         DeployEnterLottery deployEnterLottery = new DeployEnterLottery();
@@ -26,6 +26,12 @@ contract EnterLotteryTest is Test {
         _;
     }
 
+    function testIfAddressHasAlreadyEnteredLottery() public funded {
+        vm.expectRevert();
+        vm.prank(USER);
+        enterLottery.playerDeposit{value: SEND_VALUE}();
+    }
+
     function testIfUserCanDepositAfterLotteryEnds() public {
         uint256 lotteryEndingThreshold = enterLottery
             .getLotteryEndingThreshold();
@@ -34,13 +40,6 @@ contract EnterLotteryTest is Test {
         enterLottery.playerDeposit{value: lotteryEndingThreshold}();
         vm.prank(USER2);
         vm.expectRevert();
-        enterLottery.playerDeposit{value: SEND_VALUE}();
-    }
-
-    function testIfAddressHasAlreadyEnteredLottery() public funded {
-        //  address listOfLotteryPlayers = enterLottery.getListOfLotteryPlayers(0);
-        vm.expectRevert();
-        vm.prank(USER);
         enterLottery.playerDeposit{value: SEND_VALUE}();
     }
 }
