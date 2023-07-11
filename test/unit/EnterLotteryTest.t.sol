@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: MIT
+
 pragma solidity ^0.8.18;
 
 import {Test, console} from "forge-std/Test.sol";
@@ -41,5 +42,27 @@ contract EnterLotteryTest is Test {
         vm.prank(USER2);
         vm.expectRevert();
         enterLottery.playerDeposit{value: SEND_VALUE}();
+    }
+
+    function testMinimumDeposit() public {
+        vm.prank(USER2);
+        vm.expectRevert();
+        enterLottery.playerDeposit{value: 0.001 ether}();
+    }
+
+    function testMaxDeposit() public funded {
+        uint256 lotteryEndingThreshold = enterLottery
+            .getLotteryEndingThreshold();
+
+        vm.prank(USER2);
+        vm.expectRevert();
+        enterLottery.playerDeposit{value: lotteryEndingThreshold}();
+    }
+
+    function testIfDataStrutureUpdates() public funded {
+        uint256 checkIfPlayerEntered = enterLottery.getCheckIfPlayerEntered(
+            USER
+        );
+        assertEq(checkIfPlayerEntered, SEND_VALUE);
     }
 }
