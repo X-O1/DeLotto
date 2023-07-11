@@ -7,11 +7,16 @@
 
 pragma solidity ^0.8.18;
 
+import {VRFCoordinatorV2Interface} from "@chainlink/contracts/src/v0.8/interfaces/VRFCoordinatorV2Interface.sol";
+import {VRFConsumerBaseV2} from "@chainlink/contracts/src/v0.8/VRFConsumerBaseV2.sol";
+
 error NotOwner();
 
-contract EnterLottery {
+contract Lottery {
     // State Variables
-    address i_owner;
+
+    address private immutable i_owner;
+
     address[] private s_listOfLotteryPlayers;
     mapping(address => uint256) private s_checkIfPlayerEntered;
     uint256 private LOTTERY_ENDING_THRESHOLD = 20 ether;
@@ -34,7 +39,7 @@ contract EnterLottery {
     }
 
     // How a player enters the Lottery
-    function playerDeposit() public payable {
+    function enterLottery() public payable {
         require(
             checkIfUserAlreadyEnteredLottery() == false,
             "This address was already used. 1 entry per address."
@@ -69,8 +74,8 @@ contract EnterLottery {
     //  Withdraw winnings to Lottery winning address
     function withdrawToWinningAddress() public payable onlyWinner {}
 
-    // Resets the Lottery
-    function resetLottery() internal {}
+    // Resets the Lottery. Call in withdraw function
+    function resetLottery() private {}
 
     // Getters
     function getListOfLotteryPlayers(

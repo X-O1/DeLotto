@@ -6,11 +6,11 @@
 pragma solidity ^0.8.18;
 
 import {Test, console} from "forge-std/Test.sol";
-import {EnterLottery} from "../../src/EnterLottery.sol";
-import {DeployEnterLottery} from "../../script/DeployEnterLottery.s.sol";
+import {Lottery} from "../../src/Lottery.sol";
+import {DeployLottery} from "../../script/DeployLottery.s.sol";
 
-contract EnterLotteryTest is Test {
-    EnterLottery enterLottery;
+contract LotteryTest is Test {
+    Lottery lottery;
 
     address USER = makeAddr("user");
     address USER2 = makeAddr("user2");
@@ -18,54 +18,50 @@ contract EnterLotteryTest is Test {
     uint256 private constant SEND_VALUE = 5 ether;
 
     function setUp() external {
-        DeployEnterLottery deployEnterLottery = new DeployEnterLottery();
-        enterLottery = deployEnterLottery.run();
+        DeployLottery deployLottery = new DeployLottery();
+        lottery = deployLottery.run();
         vm.deal(USER, STARTING_BALANCE);
         vm.deal(USER2, STARTING_BALANCE);
     }
 
     modifier funded() {
         vm.prank(USER);
-        enterLottery.playerDeposit{value: SEND_VALUE}();
+        lottery.enterLottery{value: SEND_VALUE}();
         _;
     }
 
     function testUserCanOnlyEnterOncePerAddress() public funded {
         vm.expectRevert();
         vm.prank(USER);
-        enterLottery.playerDeposit{value: SEND_VALUE}();
+        lottery.enterLottery{value: SEND_VALUE}();
     }
 
     function testIfUserCanDepositAfterLotteryEnds() public {
-        uint256 lotteryEndingThreshold = enterLottery
-            .getLotteryEndingThreshold();
+        uint256 lotteryEndingThreshold = lottery.getLotteryEndingThreshold();
 
         vm.prank(USER);
-        enterLottery.playerDeposit{value: lotteryEndingThreshold}();
+        lottery.enterLottery{value: lotteryEndingThreshold}();
         vm.prank(USER2);
         vm.expectRevert();
-        enterLottery.playerDeposit{value: SEND_VALUE}();
+        lottery.enterLottery{value: SEND_VALUE}();
     }
 
     function testMinimumDeposit() public {
         vm.prank(USER2);
         vm.expectRevert();
-        enterLottery.playerDeposit{value: 0.001 ether}();
+        lottery.enterLottery{value: 0.001 ether}();
     }
 
     function testMaxDeposit() public funded {
-        uint256 lotteryEndingThreshold = enterLottery
-            .getLotteryEndingThreshold();
+        uint256 lotteryEndingThreshold = lottery.getLotteryEndingThreshold();
 
         vm.prank(USER2);
         vm.expectRevert();
-        enterLottery.playerDeposit{value: lotteryEndingThreshold}();
+        lottery.enterLottery{value: lotteryEndingThreshold}();
     }
 
     function testIfDataStrutureUpdates() public funded {
-        uint256 checkIfPlayerEntered = enterLottery.getCheckIfPlayerEntered(
-            USER
-        );
+        uint256 checkIfPlayerEntered = lottery.getCheckIfPlayerEntered(USER);
         assertEq(checkIfPlayerEntered, SEND_VALUE);
     }
 }
