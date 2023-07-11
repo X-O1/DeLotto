@@ -32,7 +32,7 @@ contract EnterLottery {
     }
 
     // Check if address has already entered the Lottery
-    function checkIfUserAlreadyEnteredLottery() private view returns (bool) {
+    function checkIfUserAlreadyEnteredLottery() internal view returns (bool) {
         bool hasUserEntered;
         for (uint256 i = 0; i < s_listOfLotteryPlayers.length; i++) {
             if (msg.sender == s_listOfLotteryPlayers[i]) {
