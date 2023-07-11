@@ -1,5 +1,8 @@
 // SPDX-License-Identifier: MIT
 
+// Contract Objectives:
+// Tests all functionality for the contract: EnterLottery.sol
+
 pragma solidity ^0.8.18;
 
 import {Test, console} from "forge-std/Test.sol";
@@ -27,7 +30,7 @@ contract EnterLotteryTest is Test {
         _;
     }
 
-    function testIfAddressHasAlreadyEnteredLottery() public funded {
+    function testUserCanOnlyEnterOncePerAddress() public funded {
         vm.expectRevert();
         vm.prank(USER);
         enterLottery.playerDeposit{value: SEND_VALUE}();
