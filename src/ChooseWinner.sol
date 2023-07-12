@@ -1,6 +1,9 @@
 // SPDX-License-Identifier: MIT
 
 // Contract Objectives:
+// Chooses a random winner using Chainlink VRF
+
+// Chainlink Subscpition ID: 3579
 
 pragma solidity ^0.8.18;
 
@@ -29,9 +32,8 @@ contract ChooseWinner {
         i_callbackGasLimit = callbackGasLimit;
     }
 
-    // Choose random Lottery winner with Chainlink VRF
+    // Choose random Lottery winner
     // function chooseWinner() private {
-    //     // Chainlink Subscpition ID: 3579
     //     uint256 requestId = i_vrfCoordinator.requestRandomWords(
     //         i_gasLane, // gas lane
     //         i_subscriptionId, // subscription id
