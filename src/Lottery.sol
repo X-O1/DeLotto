@@ -15,9 +15,9 @@ error NotOwner();
 contract Lottery {
     // State Variables
 
-    address private immutable i_owner;
+    // address private immutable i_owner;
 
-    address[] private s_listOfLotteryPlayers;
+    address payable[] public s_listOfLotteryPlayers;
     mapping(address => uint256) private s_checkIfPlayerEntered;
     uint256 private LOTTERY_ENDING_THRESHOLD = 20 ether;
     uint256 private MINIMUM_DEPOSIT = 0.01 ether;
@@ -25,15 +25,15 @@ contract Lottery {
         address(this).balance + msg.value;
 
     // Contructors
-    constructor() {
-        i_owner = msg.sender;
-    }
+    // constructor() {
+    //     i_owner = msg.sender;
+    // }
 
     //Modifiers
-    modifier onlyOwner() {
-        if (msg.sender != i_owner) revert NotOwner();
-        _;
-    }
+    // modifier onlyOwner() {
+    //     if (msg.sender != i_owner) revert NotOwner();
+    //     _;
+    // }
     modifier onlyWinner() {
         _;
     }
@@ -55,7 +55,7 @@ contract Lottery {
         );
 
         s_checkIfPlayerEntered[msg.sender] += msg.value;
-        s_listOfLotteryPlayers.push(msg.sender);
+        s_listOfLotteryPlayers.push(payable(msg.sender));
     }
 
     // Check if address has already entered the Lottery
@@ -78,10 +78,19 @@ contract Lottery {
     function resetLottery() private {}
 
     // Getters
-    function getListOfLotteryPlayers(
-        uint256 index
-    ) external view returns (address) {
-        return s_listOfLotteryPlayers[index];
+    function getListOfLotteryPlayers()
+        external
+        view
+        returns (address payable[] memory)
+    {
+        address payable[] memory listOfPlayers = new address payable[](
+            s_listOfLotteryPlayers.length
+        );
+
+        for (uint256 i = 0; i < s_listOfLotteryPlayers.length; i++) {
+            listOfPlayers[i] = s_listOfLotteryPlayers[i];
+        }
+        return (listOfPlayers);
     }
 
     function getCheckIfPlayerEntered(
