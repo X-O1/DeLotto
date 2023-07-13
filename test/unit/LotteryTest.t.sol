@@ -74,6 +74,4 @@ contract LotteryTest is Test {
         uint256 winningIndex = lottery.getWinningIndex();
         return winningIndex;
     }
-
-    // Testing sendWinningsAndResetLottery()
 }

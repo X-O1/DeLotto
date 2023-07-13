@@ -100,7 +100,7 @@ contract Lottery {
         s_lotteryState = LotteryState.OPEN;
         s_players = new address payable[](0);
 
-        // Send winnings
+        // Send winnings to winning address
         (bool success, ) = winner.call{value: address(this).balance}("");
         if (!success) {
             revert ChooseWinner_TransferFailed();
