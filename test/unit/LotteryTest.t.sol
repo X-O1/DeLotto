@@ -15,6 +15,7 @@ contract LotteryTest is Test {
     address USER = makeAddr("user");
     address USER2 = makeAddr("user2");
     address USER3 = makeAddr("user3");
+    address USER4 = makeAddr("user4");
     uint256 private constant STARTING_BALANCE = 25 ether;
     uint256 private constant SEND_VALUE = 5 ether;
 
@@ -24,6 +25,7 @@ contract LotteryTest is Test {
         vm.deal(USER, STARTING_BALANCE);
         vm.deal(USER2, STARTING_BALANCE);
         vm.deal(USER3, STARTING_BALANCE);
+        vm.deal(USER4, STARTING_BALANCE);
     }
 
     modifier funded() {
@@ -38,9 +40,10 @@ contract LotteryTest is Test {
         lottery.enterLottery{value: 19 ether}();
         vm.prank(USER2);
         lottery.enterLottery{value: 1 ether}();
-        vm.expectRevert();
         vm.prank(USER3);
         lottery.enterLottery{value: 1 ether}();
+        vm.prank(USER4);
+        lottery.enterLottery{value: 5 ether}();
         console.log(address(lottery).balance);
     }
 
@@ -70,16 +73,6 @@ contract LotteryTest is Test {
         vm.expectRevert();
         uint256 winningIndex = lottery.getWinningIndex();
         return winningIndex;
-    }
-
-    function testRandomNumberIsNotGreaterThanNumberOfPlayers() public {
-        uint256 lotteryEndingThreshold = lottery.getLotteryEndingThreshold();
-
-        vm.prank(USER);
-        lottery.enterLottery{value: lotteryEndingThreshold}();
-        vm.prank(msg.sender);
-        uint256 winningIndex = lottery.getWinningIndex();
-        assert(winningIndex <= lottery.getListOfPlayers().length);
     }
 
     // Testing sendWinningsAndResetLottery()

@@ -22,26 +22,19 @@ contract Lottery {
     /* State Variables */
     address private immutable i_owner;
 
-    uint16 private constant REQUEST_CONFIRMATIONS = 3;
-    uint32 private constant NUMBER_OF_WORDS = 1;
     uint256 private constant LOTTERY_ENDING_THRESHOLD = 20 ether;
     uint256 private constant MINIMUM_DEPOSIT = 0.01 ether;
 
     address payable[] private s_players;
+
     mapping(address => uint256) private s_checkIfPlayerEntered;
     uint256 private s_lotteryBalanceAfterUserDeposit =
         address(this).balance + msg.value;
-
     LotteryState private s_lotteryState;
 
     constructor() {
         s_lotteryState = LotteryState.OPEN;
         i_owner = msg.sender;
-    }
-
-    modifier onlyOwner() {
-        if (msg.sender != i_owner) revert Lottery__NotOwner();
-        _;
     }
 
     // ENTER THE LOTTERY
@@ -61,6 +54,7 @@ contract Lottery {
             s_lotteryState = LotteryState.OPEN;
         } else if (address(this).balance >= LOTTERY_ENDING_THRESHOLD) {
             s_lotteryState = LotteryState.CALCULATING;
+            sendWinningsAndResetLottery();
         }
     }
 
@@ -78,7 +72,7 @@ contract Lottery {
     }
 
     // CHOOSE WINNER
-    function getWinningIndex() public onlyOwner returns (uint256) {
+    function getWinningIndex() public returns (uint256) {
         require(
             address(this).balance >= LOTTERY_ENDING_THRESHOLD,
             "Lottery is still running, threshold hasn't been met."
@@ -93,11 +87,7 @@ contract Lottery {
     }
 
     // WITHRAW FUNDS TO WINNINGS ADDRESS
-    function sendWinningsAndResetLottery()
-        public
-        onlyOwner
-        returns (address Winner)
-    {
+    function sendWinningsAndResetLottery() private returns (address Winner) {
         require(
             s_lotteryState == LotteryState.CALCULATING,
             "LOTTERY STILL RUNNING"
