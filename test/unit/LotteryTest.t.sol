@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 
 // Contract Objectives:
-// Tests all functionality for the contract: EnterLottery.sol
+// Tests all functionality for the contract: Lottery.sol
 
 pragma solidity ^0.8.18;
 
