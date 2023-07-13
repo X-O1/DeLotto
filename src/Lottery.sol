@@ -40,10 +40,17 @@ contract Lottery {
     // ENTER THE LOTTERY
     function enterLottery() public payable {
         require(s_lotteryState == LotteryState.OPEN, "Lottery is not open.");
-        require(
-            checkIfUserAlreadyEnteredLottery() == false,
-            "This address was already used. 1 entry per address."
-        );
+
+        for (uint256 i = 0; i < s_players.length; i++) {
+            require(
+                msg.sender != s_players[i],
+                "This address was already used. 1 entry per address."
+            );
+        }
+        // require(
+        //     checkIfUserAlreadyEnteredLottery() == false,
+        //     "This address was already used. 1 entry per address."
+        // );
         require(msg.sender != i_owner, "Contract owner can not enter lottery.");
         require(msg.value >= MINIMUM_DEPOSIT, "Not enough Eth deposited!");
 
@@ -74,7 +81,7 @@ contract Lottery {
     }
 
     // WITHRAW FUNDS TO WINNING ADDRESS
-    function sendWinningsAndResetLottery() private returns (address Winner) {
+    function sendWinningsAndResetLottery() private {
         require(
             s_lotteryState == LotteryState.CALCULATING,
             "LOTTERY STILL RUNNING"
@@ -92,21 +99,20 @@ contract Lottery {
         if (!success) {
             revert ChooseWinner_TransferFailed();
         }
-        return winner;
     }
 
     /** Getter Functions */
-    function checkIfUserAlreadyEnteredLottery() private view returns (bool) {
-        bool hasUserEntered;
-        for (uint256 i = 0; i < s_players.length; i++) {
-            if (msg.sender == s_players[i]) {
-                hasUserEntered = true;
-            } else {
-                hasUserEntered = false;
-            }
-        }
-        return hasUserEntered;
-    }
+    // function checkIfUserAlreadyEnteredLottery() private view returns (bool) {
+    //     bool hasUserEntered;
+    //     for (uint256 i = 0; i < s_players.length; i++) {
+    //         if (msg.sender == s_players[i]) {
+    //             hasUserEntered = true;
+    //         } else {
+    //             hasUserEntered = false;
+    //         }
+    //     }
+    //     return hasUserEntered;
+    // }
 
     function getRoomLeftInPool() external view returns (uint256) {
         require(

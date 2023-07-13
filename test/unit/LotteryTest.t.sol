@@ -51,6 +51,11 @@ contract LotteryTest is Test {
         vm.expectRevert();
         vm.prank(USER);
         lottery.enterLottery{value: SEND_VALUE}();
+        vm.prank(USER2);
+        lottery.enterLottery{value: SEND_VALUE}();
+        vm.expectRevert();
+        vm.prank(USER);
+        lottery.enterLottery{value: SEND_VALUE}();
     }
 
     function testMinimumDeposit() public {
