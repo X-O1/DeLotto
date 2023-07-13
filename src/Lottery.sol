@@ -35,7 +35,7 @@ contract Lottery {
         s_lotteryState = LotteryState.OPEN;
     }
 
-    /** ENTER THE LOTTERY */
+    // ENTER THE LOTTERY
     function enterLottery() public payable {
         if (address(this).balance == LOTTERY_ENDING_THRESHOLD) {
             s_lotteryState = LotteryState.CALCULATING;
@@ -70,7 +70,7 @@ contract Lottery {
         return hasUserEntered;
     }
 
-    /** CHOOSE WINNER */
+    // CHOOSE WINNER
     function getWinningIndex() internal returns (uint256) {
         require(
             address(this).balance == LOTTERY_ENDING_THRESHOLD,
@@ -85,7 +85,7 @@ contract Lottery {
         return winningIndex;
     }
 
-    /** WITHRAW FUNDS TO WINNINGS ADDRESS */
+    // WITHRAW FUNDS TO WINNINGS ADDRESS
     function sendWinningsAndResetLottery() internal {
         require(
             s_lotteryState == LotteryState.CALCULATING,
