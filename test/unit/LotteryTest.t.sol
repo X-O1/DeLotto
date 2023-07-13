@@ -16,8 +16,8 @@ contract LotteryTest is Test {
     address USER2 = makeAddr("user2");
     address USER3 = makeAddr("user3");
     address USER4 = makeAddr("user4");
-    uint256 private constant STARTING_BALANCE = 25 ether;
-    uint256 private constant SEND_VALUE = 5 ether;
+    uint256 private constant STARTING_BALANCE = 5 ether;
+    uint256 private constant SEND_VALUE = .1 ether;
 
     function setUp() external {
         DeployLottery deployLottery = new DeployLottery();
@@ -37,13 +37,13 @@ contract LotteryTest is Test {
     // Testing enterLottery()
     function testThatTheLotteryStateIsCheckedAndUpdated() public {
         vm.prank(USER);
-        lottery.enterLottery{value: 19 ether}();
+        lottery.enterLottery{value: .9 ether}();
         vm.prank(USER2);
-        lottery.enterLottery{value: 1 ether}();
+        lottery.enterLottery{value: .1 ether}();
         vm.prank(USER3);
-        lottery.enterLottery{value: 1 ether}();
+        lottery.enterLottery{value: .1 ether}();
         vm.prank(USER4);
-        lottery.enterLottery{value: 5 ether}();
+        lottery.enterLottery{value: .5 ether}();
         console.log(address(lottery).balance);
     }
 
@@ -63,15 +63,5 @@ contract LotteryTest is Test {
         uint256 checkIfPlayerEntered = lottery.checkIfPlayerEntered(USER);
         assertEq(checkIfPlayerEntered, SEND_VALUE);
     }
-
-    // Testing getWinningIndex()
-    function testGetWinningIndexWillOnlyRunIfLotteryIsOver()
-        public
-        funded
-        returns (uint256)
-    {
-        vm.expectRevert();
-        uint256 winningIndex = lottery.getWinningIndex();
-        return winningIndex;
-    }
+    // Testings Getter functions
 }

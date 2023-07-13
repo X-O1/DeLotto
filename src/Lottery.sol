@@ -22,7 +22,7 @@ contract Lottery {
     /* State Variables */
     address private immutable i_owner;
 
-    uint256 private constant LOTTERY_ENDING_THRESHOLD = 20 ether;
+    uint256 private constant LOTTERY_ENDING_THRESHOLD = 1 ether;
     uint256 private constant MINIMUM_DEPOSIT = 0.01 ether;
 
     address payable[] private s_players;
@@ -58,21 +58,8 @@ contract Lottery {
         }
     }
 
-    // Check if address has already entered the Lottery
-    function checkIfUserAlreadyEnteredLottery() internal view returns (bool) {
-        bool hasUserEntered;
-        for (uint256 i = 0; i < s_players.length; i++) {
-            if (msg.sender == s_players[i]) {
-                hasUserEntered = true;
-            } else {
-                hasUserEntered = false;
-            }
-        }
-        return hasUserEntered;
-    }
-
     // CHOOSE WINNER
-    function getWinningIndex() public returns (uint256) {
+    function getWinningIndex() internal returns (uint256) {
         require(
             address(this).balance >= LOTTERY_ENDING_THRESHOLD,
             "Lottery is still running, threshold hasn't been met."
@@ -86,7 +73,7 @@ contract Lottery {
         return winningIndex;
     }
 
-    // WITHRAW FUNDS TO WINNINGS ADDRESS
+    // WITHRAW FUNDS TO WINNING ADDRESS
     function sendWinningsAndResetLottery() private returns (address Winner) {
         require(
             s_lotteryState == LotteryState.CALCULATING,
@@ -100,7 +87,7 @@ contract Lottery {
         s_lotteryState = LotteryState.OPEN;
         s_players = new address payable[](0);
 
-        // Send winnings to winning address
+        // Send winnings
         (bool success, ) = winner.call{value: address(this).balance}("");
         if (!success) {
             revert ChooseWinner_TransferFailed();
@@ -109,6 +96,18 @@ contract Lottery {
     }
 
     /** Getter Functions */
+    function checkIfUserAlreadyEnteredLottery() private view returns (bool) {
+        bool hasUserEntered;
+        for (uint256 i = 0; i < s_players.length; i++) {
+            if (msg.sender == s_players[i]) {
+                hasUserEntered = true;
+            } else {
+                hasUserEntered = false;
+            }
+        }
+        return hasUserEntered;
+    }
+
     function getRoomLeftInPool() external view returns (uint256) {
         require(
             s_lotteryState == LotteryState.OPEN,
