@@ -26,7 +26,7 @@ contract Lottery {
 
     address payable[] private s_players;
     mapping(address => uint256) private s_checkIfPlayerEntered;
-    uint256 internal current_Pool_Balance_After_User_Deposit =
+    uint256 private s_lotteryBalanceAfterUserDeposit =
         address(this).balance + msg.value;
 
     LotteryState public s_lotteryState;
@@ -37,21 +37,18 @@ contract Lottery {
 
     // ENTER THE LOTTERY
     function enterLottery() public payable {
-        if (address(this).balance == LOTTERY_ENDING_THRESHOLD) {
-            s_lotteryState = LotteryState.CALCULATING;
-        } else {
-            s_lotteryState = LotteryState.OPEN;
-        }
-        require(s_lotteryState == LotteryState.OPEN, "Lottery not open");
+        require(s_lotteryState == LotteryState.OPEN, "Lottery is not open.");
         require(
             checkIfUserAlreadyEnteredLottery() == false,
             "This address was already used. 1 entry per address."
         );
         require(msg.value >= MINIMUM_DEPOSIT, "Not enough Eth deposited!");
-        require(
-            current_Pool_Balance_After_User_Deposit < LOTTERY_ENDING_THRESHOLD,
-            "Deposit less, not enough room!"
-        );
+
+        if (address(this).balance < LOTTERY_ENDING_THRESHOLD) {
+            s_lotteryState = LotteryState.OPEN;
+        } else if (address(this).balance >= LOTTERY_ENDING_THRESHOLD) {
+            s_lotteryState = LotteryState.CALCULATING;
+        }
 
         s_checkIfPlayerEntered[msg.sender] += msg.value;
         s_players.push(payable(msg.sender));

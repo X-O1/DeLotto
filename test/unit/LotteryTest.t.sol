@@ -14,6 +14,7 @@ contract LotteryTest is Test {
 
     address USER = makeAddr("user");
     address USER2 = makeAddr("user2");
+    address USER3 = makeAddr("user3");
     uint256 private constant STARTING_BALANCE = 25 ether;
     uint256 private constant SEND_VALUE = 5 ether;
 
@@ -22,6 +23,7 @@ contract LotteryTest is Test {
         lottery = deployLottery.run();
         vm.deal(USER, STARTING_BALANCE);
         vm.deal(USER2, STARTING_BALANCE);
+        vm.deal(USER3, STARTING_BALANCE);
     }
 
     modifier funded() {
@@ -30,34 +32,29 @@ contract LotteryTest is Test {
         _;
     }
 
+    // Testing enterLottery() from Lottery.sol
+    function testThatTheLotteryStateIsCheckedAndUpdated() public {
+        // uint256 lotteryEndingThreshold = lottery.getLotteryEndingThreshold();
+        vm.prank(USER);
+        lottery.enterLottery{value: 19 ether}();
+        vm.prank(USER2);
+        lottery.enterLottery{value: 1 ether}();
+        vm.expectRevert();
+        vm.prank(USER3);
+        lottery.enterLottery{value: 1 ether}();
+        console.log(address(lottery).balance);
+    }
+
     function testUserCanOnlyEnterOncePerAddress() public funded {
         vm.expectRevert();
         vm.prank(USER);
         lottery.enterLottery{value: SEND_VALUE}();
     }
 
-    function testIfUserCanDepositAfterLotteryEnds() public {
-        // uint256 lotteryEndingThreshold = lottery.getLotteryEndingThreshold();
-
-        vm.prank(USER);
-        lottery.enterLottery{value: 19 ether}();
-        // vm.expectRevert();
-        vm.prank(USER2);
-        lottery.enterLottery{value: 0.99999 ether}();
-    }
-
     function testMinimumDeposit() public {
         vm.prank(USER2);
         vm.expectRevert();
         lottery.enterLottery{value: 0.001 ether}();
-    }
-
-    function testMaxDeposit() public funded {
-        uint256 lotteryEndingThreshold = lottery.getLotteryEndingThreshold();
-
-        vm.prank(USER2);
-        vm.expectRevert();
-        lottery.enterLottery{value: lotteryEndingThreshold}();
     }
 
     function testIfDataStrutureUpdates() public funded {
