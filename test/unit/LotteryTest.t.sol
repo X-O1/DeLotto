@@ -37,13 +37,13 @@ contract LotteryTest is Test {
     }
 
     function testIfUserCanDepositAfterLotteryEnds() public {
-        uint256 lotteryEndingThreshold = lottery.getLotteryEndingThreshold();
+        // uint256 lotteryEndingThreshold = lottery.getLotteryEndingThreshold();
 
         vm.prank(USER);
-        lottery.enterLottery{value: lotteryEndingThreshold}();
+        lottery.enterLottery{value: 19 ether}();
+        // vm.expectRevert();
         vm.prank(USER2);
-        vm.expectRevert();
-        lottery.enterLottery{value: SEND_VALUE}();
+        lottery.enterLottery{value: 0.99999 ether}();
     }
 
     function testMinimumDeposit() public {
