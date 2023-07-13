@@ -20,7 +20,6 @@ contract Lottery {
     }
 
     /* State Variables */
-
     address private immutable i_owner;
 
     uint16 private constant REQUEST_CONFIRMATIONS = 3;
