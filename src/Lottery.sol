@@ -11,6 +11,7 @@ pragma solidity ^0.8.18;
 contract Lottery {
     /* Custom Errors */
     error ChooseWinner_TransferFailed();
+    error Lottery__NotOwner();
 
     /*Type declarations */
     enum LotteryState {
@@ -19,6 +20,9 @@ contract Lottery {
     }
 
     /* State Variables */
+
+    address private immutable i_owner;
+
     uint16 private constant REQUEST_CONFIRMATIONS = 3;
     uint32 private constant NUMBER_OF_WORDS = 1;
     uint256 private constant LOTTERY_ENDING_THRESHOLD = 20 ether;
@@ -29,10 +33,16 @@ contract Lottery {
     uint256 private s_lotteryBalanceAfterUserDeposit =
         address(this).balance + msg.value;
 
-    LotteryState public s_lotteryState;
+    LotteryState private s_lotteryState;
 
     constructor() {
         s_lotteryState = LotteryState.OPEN;
+        i_owner = msg.sender;
+    }
+
+    modifier onlyOwner() {
+        if (msg.sender != i_owner) revert Lottery__NotOwner();
+        _;
     }
 
     // ENTER THE LOTTERY
@@ -42,6 +52,7 @@ contract Lottery {
             checkIfUserAlreadyEnteredLottery() == false,
             "This address was already used. 1 entry per address."
         );
+        require(msg.sender != i_owner, "Contract owner can not enter lottery.");
         require(msg.value >= MINIMUM_DEPOSIT, "Not enough Eth deposited!");
 
         if (address(this).balance < LOTTERY_ENDING_THRESHOLD) {
@@ -68,7 +79,7 @@ contract Lottery {
     }
 
     // CHOOSE WINNER
-    function getWinningIndex() public returns (uint256) {
+    function getWinningIndex() public onlyOwner returns (uint256) {
         require(
             address(this).balance == LOTTERY_ENDING_THRESHOLD,
             "Lottery is still running, threshold hasn't been met."
@@ -83,7 +94,11 @@ contract Lottery {
     }
 
     // WITHRAW FUNDS TO WINNINGS ADDRESS
-    function sendWinningsAndResetLottery() public {
+    function sendWinningsAndResetLottery()
+        public
+        onlyOwner
+        returns (address Winner)
+    {
         require(
             s_lotteryState == LotteryState.CALCULATING,
             "LOTTERY STILL RUNNING"
@@ -101,10 +116,17 @@ contract Lottery {
         if (!success) {
             revert ChooseWinner_TransferFailed();
         }
+        return winner;
     }
 
     /** Getter Functions */
-    function getListOfLotteryPlayers()
+    function getRoomLeftInPool() external view returns (uint256) {
+        uint256 roomLeftInLottery = LOTTERY_ENDING_THRESHOLD -
+            address(this).balance;
+        return roomLeftInLottery;
+    }
+
+    function getListOfPlayers()
         external
         view
         returns (address payable[] memory)
@@ -119,7 +141,7 @@ contract Lottery {
         return (listOfPlayers);
     }
 
-    function getCheckIfPlayerEntered(
+    function checkIfPlayerEntered(
         address fundingAddress
     ) external view returns (uint256) {
         return s_checkIfPlayerEntered[fundingAddress];

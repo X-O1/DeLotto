@@ -57,7 +57,7 @@ contract LotteryTest is Test {
     }
 
     function testIfDataStrutureUpdates() public funded {
-        uint256 checkIfPlayerEntered = lottery.getCheckIfPlayerEntered(USER);
+        uint256 checkIfPlayerEntered = lottery.checkIfPlayerEntered(USER);
         assertEq(checkIfPlayerEntered, SEND_VALUE);
     }
 
@@ -77,9 +77,9 @@ contract LotteryTest is Test {
 
         vm.prank(USER);
         lottery.enterLottery{value: lotteryEndingThreshold}();
-
+        vm.prank(msg.sender);
         uint256 winningIndex = lottery.getWinningIndex();
-        assert(winningIndex <= lottery.getListOfLotteryPlayers().length);
+        assert(winningIndex <= lottery.getListOfPlayers().length);
     }
 
     // Testing sendWinningsAndResetLottery()
