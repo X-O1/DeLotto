@@ -55,14 +55,14 @@ contract Lottery {
         require(msg.sender != i_owner, "Contract owner can not enter lottery.");
         require(msg.value >= MINIMUM_DEPOSIT, "Not enough Eth deposited!");
 
+        s_checkIfPlayerEntered[msg.sender] += msg.value;
+        s_players.push(payable(msg.sender));
+
         if (address(this).balance < LOTTERY_ENDING_THRESHOLD) {
             s_lotteryState = LotteryState.OPEN;
         } else if (address(this).balance >= LOTTERY_ENDING_THRESHOLD) {
             s_lotteryState = LotteryState.CALCULATING;
         }
-
-        s_checkIfPlayerEntered[msg.sender] += msg.value;
-        s_players.push(payable(msg.sender));
     }
 
     // Check if address has already entered the Lottery
@@ -81,7 +81,7 @@ contract Lottery {
     // CHOOSE WINNER
     function getWinningIndex() public onlyOwner returns (uint256) {
         require(
-            address(this).balance == LOTTERY_ENDING_THRESHOLD,
+            address(this).balance > LOTTERY_ENDING_THRESHOLD,
             "Lottery is still running, threshold hasn't been met."
         );
         s_lotteryState = LotteryState.CALCULATING;
