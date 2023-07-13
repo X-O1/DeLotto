@@ -102,18 +102,6 @@ contract Lottery {
     }
 
     /** Getter Functions */
-    // function checkIfUserAlreadyEnteredLottery() private view returns (bool) {
-    //     bool hasUserEntered;
-    //     for (uint256 i = 0; i < s_players.length; i++) {
-    //         if (msg.sender == s_players[i]) {
-    //             hasUserEntered = true;
-    //         } else {
-    //             hasUserEntered = false;
-    //         }
-    //     }
-    //     return hasUserEntered;
-    // }
-
     function getRoomLeftInPool() external view returns (uint256) {
         require(
             s_lotteryState == LotteryState.OPEN,
