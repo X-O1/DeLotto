@@ -32,9 +32,8 @@ contract LotteryTest is Test {
         _;
     }
 
-    // Testing enterLottery() from Lottery.sol
+    // Testing enterLottery()
     function testThatTheLotteryStateIsCheckedAndUpdated() public {
-        // uint256 lotteryEndingThreshold = lottery.getLotteryEndingThreshold();
         vm.prank(USER);
         lottery.enterLottery{value: 19 ether}();
         vm.prank(USER2);
@@ -61,4 +60,27 @@ contract LotteryTest is Test {
         uint256 checkIfPlayerEntered = lottery.getCheckIfPlayerEntered(USER);
         assertEq(checkIfPlayerEntered, SEND_VALUE);
     }
+
+    // Testing getWinningIndex()
+    function testGetWinningIndexWillOnlyRunIfLotteryIsOver()
+        public
+        funded
+        returns (uint256)
+    {
+        vm.expectRevert();
+        uint256 winningIndex = lottery.getWinningIndex();
+        return winningIndex;
+    }
+
+    function testRandomNumberIsNotGreaterThanNumberOfPlayers() public {
+        uint256 lotteryEndingThreshold = lottery.getLotteryEndingThreshold();
+
+        vm.prank(USER);
+        lottery.enterLottery{value: lotteryEndingThreshold}();
+
+        uint256 winningIndex = lottery.getWinningIndex();
+        assert(winningIndex <= lottery.getListOfLotteryPlayers().length);
+    }
+
+    // Testing sendWinningsAndResetLottery()
 }

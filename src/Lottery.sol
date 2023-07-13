@@ -68,7 +68,7 @@ contract Lottery {
     }
 
     // CHOOSE WINNER
-    function getWinningIndex() internal returns (uint256) {
+    function getWinningIndex() public returns (uint256) {
         require(
             address(this).balance == LOTTERY_ENDING_THRESHOLD,
             "Lottery is still running, threshold hasn't been met."
@@ -83,7 +83,7 @@ contract Lottery {
     }
 
     // WITHRAW FUNDS TO WINNINGS ADDRESS
-    function sendWinningsAndResetLottery() internal {
+    function sendWinningsAndResetLottery() public {
         require(
             s_lotteryState == LotteryState.CALCULATING,
             "LOTTERY STILL RUNNING"
