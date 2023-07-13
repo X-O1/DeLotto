@@ -81,7 +81,7 @@ contract Lottery {
     // CHOOSE WINNER
     function getWinningIndex() public onlyOwner returns (uint256) {
         require(
-            address(this).balance > LOTTERY_ENDING_THRESHOLD,
+            address(this).balance >= LOTTERY_ENDING_THRESHOLD,
             "Lottery is still running, threshold hasn't been met."
         );
         s_lotteryState = LotteryState.CALCULATING;
@@ -121,6 +121,11 @@ contract Lottery {
 
     /** Getter Functions */
     function getRoomLeftInPool() external view returns (uint256) {
+        require(
+            s_lotteryState == LotteryState.OPEN,
+            "No room left lottery is closed."
+        );
+
         uint256 roomLeftInLottery = LOTTERY_ENDING_THRESHOLD -
             address(this).balance;
         return roomLeftInLottery;
