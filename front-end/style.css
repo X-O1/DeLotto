@@ -51,7 +51,7 @@ body {
     width: 45%;
     height: 325px;
     border: groove #E46432 1px;
-    border-radius: 25px;
+    border-radius: 20px;
     display: flex;
     flex-direction: column;
     background-color: #49E9A6;
@@ -205,7 +205,7 @@ body {
 
 /* LOTTERY LOG */
 .toggle-log {
-    margin: 0px auto;
+    margin: -10px auto;
     height: 20px;
     width: 175px;
     padding: 5px;
@@ -222,10 +222,22 @@ body {
 
 .lottery-log {
     height: 350px;
-    width: 100%;
+    width: 70%;
     margin: 0px;
     /* border: #E46432 solid .1px; */
     border-radius: 25px;
     box-sizing: border-box;
     background-color: #0A273B;
+    display: flex;
+    font-size: 32px;
+    opacity: 0;
+}
+
+.log-list {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    list-style: none;
+    margin: 5px auto;
+    width: 100%;
 }
