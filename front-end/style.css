@@ -241,7 +241,7 @@ body {
     background-color: #0A273B;
     display: flex;
     font-size: 32px;
-    opacity: 0;
+    opacity: 0; /* change with javascript */
 }
 
 .log-list {
