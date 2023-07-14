@@ -97,20 +97,27 @@ body {
     padding: 0px;
 }
 
-.progress {
+.deposit-box {
     height: 100%;
     width: 65%;
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: right;
+    flex-direction: row;
+    gap: 5px;
 }
 
-.progress-bar {
+.deposit-title {
+    color: #0A273B;
+    font-size: 22px;
+}
+
+.deposit-box input {
     height: 30%;
-    width: 65%;
-    border: solid black .1px;
-    border-radius: 100px;
-    display: none;
+    width: 20%;
+    border: solid #0A273B .1px;
+    border-radius: 5px;
+    background: none;
 }
 
 .middle-row {
@@ -119,7 +126,20 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
+    flex-direction: column;
 }
+
+.middle-row input {
+    background: #0A273B;
+    color: #E46432;
+    width: 100px;
+    padding: 5px;
+    border: none;
+    border-radius: 5px;
+    text-align: center;
+
+}
+
 
 .enter-lottery-button {
     height: 50%;
