@@ -56,6 +56,8 @@ body {
     flex-direction: column;
     background-color: #49E9A6;
     box-sizing: border-box;
+    padding: 0px 25px 5px;
+
 
 }
 
@@ -68,7 +70,7 @@ body {
 .top-row {
     height: 20%;
     display: flex;
-    justify-content: space-around;
+    justify-content: space-between;
     font-size: 30px;
 }
 
