@@ -1,0 +1,168 @@
+body {
+    box-sizing: border-box;
+    margin: 0;
+    background-color: #0A273B;
+    color: #E46432;
+    padding: 10px;
+    font-family: 'VT323', monospace;
+}
+
+.header {
+    width: 100%;
+    height: 5vh;
+    display: flex;
+    justify-content: space-between;
+}
+
+.logo,
+.wallet {
+    width: 10%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 32px;
+    text-align: center;
+}
+
+.wallet {
+    font-size: 28px;
+    margin-right: 25px;
+}
+
+.main-container {
+    width: 100%;
+    height: 70vh;
+    padding: 0px;
+    margin: 0px;
+    display: flex;
+    align-items: center;
+}
+
+.loto-box {
+    margin: 0px auto;
+    width: 45%;
+    height: 325px;
+    border: solid black 1px;
+    border-radius: 25px;
+    display: flex;
+    flex-direction: column;
+    background-color: #49E9A6;
+}
+
+.top-row,
+.middle-row,
+.bottom-row {
+    width: 100%;
+    border: solid black .1px;
+
+
+}
+
+.top-row {
+    height: 20%;
+    display: flex;
+    justify-content: space-between;
+    font-size: 30px;
+}
+
+.status {
+    height: 100%;
+    width: 25%;
+    border: solid black .1px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+
+}
+
+.status-title {
+    color: #0A273B;
+
+}
+
+.status-light {
+    display: block;
+    width: 10px;
+    height: 10px;
+    border: solid #0A273B 3px;
+    border-radius: 100px;
+    background-color: #E46432;
+    /* when lottery is closed color is #0A273B */
+    margin: 0px;
+    padding: 0px;
+
+
+}
+
+.progress {
+    height: 100%;
+    width: 75%;
+    border: solid black .1px;
+
+}
+
+.middle-row {
+    height: 60%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.enter-lottery-button {
+    height: 50%;
+    width: 70%;
+    border: #E46432 solid 1px;
+    font-size: 44px;
+    background-image: linear-gradient(to right, #0A273B 0%, #0A273B 81%, #0A273B 100%);
+    margin: 10px;
+    padding: 15px 45px;
+    text-align: center;
+    text-transform: uppercase;
+    transition: 1ms;
+    background-size: 200% auto;
+    color: #E46432;
+    box-shadow: 0 0 20px #eee;
+    border-radius: 10px;
+    display: block;
+    font-family: 'VT323', monospace;
+    box-shadow: 0 5px #E46432;
+
+}
+
+.enter-lottery-button:hover {
+    background-position: right center;
+    /* change the direction of the change here */
+    color: #E46432;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.enter-lottery-button:active {
+    box-shadow: 0 2px #0A273B;
+    transform: translateY(4px);
+    border: none;
+}
+
+.bottom-row {
+    height: 20%;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    margin: 0px;
+}
+
+.rules {
+    height: 100%;
+    width: 33%;
+    border: solid black .1px;
+
+}
+
+.fees {
+    height: 100%;
+    width: 33%;
+    border: solid black .1px;
+
+}
