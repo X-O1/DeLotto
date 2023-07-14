@@ -57,8 +57,6 @@ body {
     background-color: #49E9A6;
     box-sizing: border-box;
     padding: 0px 25px 5px;
-
-
 }
 
 .top-row,
@@ -119,8 +117,11 @@ body {
     width: 20%;
     border: solid #0A273B .1px;
     border-radius: 5px;
-    background: none;
+    background: #0A273B;
+    padding-left: 5px;
+    color: #49E9A6;
 }
+
 
 .middle-row {
     height: 60%;
@@ -130,18 +131,6 @@ body {
     align-items: center;
     flex-direction: column;
 }
-
-.middle-row input {
-    background: #0A273B;
-    color: #E46432;
-    width: 100px;
-    padding: 5px;
-    border: none;
-    border-radius: 5px;
-    text-align: center;
-
-}
-
 
 .enter-lottery-button {
     height: 50%;
