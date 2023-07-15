@@ -10,13 +10,15 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
 
-    <script src="app.js" defer></script>
+    <script src="../dist/bundle.js" type="text/javascript" defer></script>
 </head>
 
 <body>
     <header class="header">
         <div class="logo">ThaLoto</div>
-        <div class="wallet">Connect Wallet</div>
+        <button class="wallet" onclick="bundle.connect()">Connect Wallet
+        </button>
+
     </header>
     <section class="main-container">
         <div class="loto-box">
@@ -27,11 +29,11 @@
                 </div>
                 <div class="deposit-box">
                     <p class="deposit-title">Eth Deposit Amount:</p>
-                    <input type="number" min="0.01" step="0.01" value="0.01" placeholder="0.01">
+                    <input type="number" min="10000000" step="01000000" value="1" placeholder="min. 0.01 eth">
                 </div>
             </div>
             <div class="middle-row">
-                <button class="enter-lottery-button">Enter Lottery!</button>
+                <button class="enter-lottery-button" onclick="bundle.execute()">Enter Lottery!</button>
             </div>
             <div class="bottom-row">
                 <div class="rules">

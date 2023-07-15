@@ -28,8 +28,13 @@ body {
 }
 
 .wallet {
-    font-size: 28px;
-    margin-right: 25px;
+    font-size: 30px;
+    margin-right: 30px;
+    font-family: 'VT323', monospace;
+    background: none;
+    color: #E46432;
+    border: none;
+    cursor: pointer;
 }
 
 /* LOTTERY BOX */
