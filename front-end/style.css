@@ -61,7 +61,7 @@ body {
     flex-direction: column;
     background-color: #49E9A6;
     box-sizing: border-box;
-    padding: 0px 25px 5px;
+    padding: 0px 25px 6px;
 }
 
 .top-row,
@@ -102,7 +102,7 @@ body {
     padding: 0px;
 }
 
-.deposit-box {
+/* .deposit-box {
     height: 100%;
     width: 65%;
     display: flex;
@@ -125,7 +125,7 @@ body {
     background: #0A273B;
     padding-left: 5px;
     color: #49E9A6;
-}
+} */
 
 
 .middle-row {
@@ -178,7 +178,7 @@ body {
 
 .rules {
     height: 100%;
-    width: 63%;
+    width: 66%;
     border-radius: 0px 10px 0px 0px;
     display: flex;
     justify-content: center;
@@ -197,7 +197,7 @@ body {
 
 .rule-list {
     margin: 0px;
-    font-size: 17px;
+    font-size: 18px;
     color: #41469D;
 }
 
@@ -246,7 +246,7 @@ body {
     background-color: #0A273B;
     display: flex;
     font-size: 32px;
-    opacity: 0; /* change with javascript */
+    opacity: 1; /* change with javascript */
 }
 
 .log-list {
@@ -256,4 +256,30 @@ body {
     list-style: none;
     margin: 5px auto;
     width: 100%;
+}
+.lottery-balance {
+    height: 50px;
+    width: 200px;
+    border: #E46432 solid 1px;
+    font-size: 18px;
+    background-image: linear-gradient(to right, #0A273B 0%, #0A273B 81%, #0A273B 100%);
+    margin: 10px 10px 10px 0;
+    text-align: center;
+    text-transform: uppercase;
+    background-size: 200% auto;
+    color: #E46432;
+    box-shadow: 0 0 20px #eee;
+    border-radius: 10px;
+    font-family: 'VT323', monospace;
+    box-shadow: 0 5px #E46432;
+    cursor: pointer;
+}
+.lottery-balance:hover {
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.lottery-balance:active {
+    box-shadow: 0 2px #0A273B;
+    transform: translateY(4px);
 }

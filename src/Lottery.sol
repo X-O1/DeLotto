@@ -12,6 +12,7 @@ contract Lottery {
     /* Custom Errors */
     error ChooseWinner_TransferFailed();
     error Lottery__NotOwner();
+    error Deposit_Failed();
 
     /*Type declarations */
     enum LotteryState {
@@ -22,7 +23,7 @@ contract Lottery {
     /* State Variables */
     address private immutable i_owner;
     uint256 private constant LOTTERY_ENDING_THRESHOLD = 1 ether;
-    uint256 private constant MINIMUM_DEPOSIT = 0.01 ether;
+    uint256 private constant ENTRY_FEE = 0.25 ether;
     address payable[] private s_players;
     mapping(address => uint256) private s_checkIfPlayerEntered;
     uint256 private s_lotteryBalanceAfterUserDeposit =
@@ -44,7 +45,7 @@ contract Lottery {
             );
         }
         require(msg.sender != i_owner, "Contract owner can not enter lottery.");
-        require(msg.value >= MINIMUM_DEPOSIT, "Not enough Eth deposited!");
+        // require(msg.value >= ENTRY_FEE, "Not enough Eth deposited!");
         s_checkIfPlayerEntered[msg.sender] += msg.value;
         s_players.push(payable(msg.sender));
 
