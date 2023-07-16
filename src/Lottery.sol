@@ -45,7 +45,7 @@ contract Lottery {
             );
         }
         require(msg.sender != i_owner, "Contract owner can not enter lottery.");
-        // require(msg.value >= ENTRY_FEE, "Not enough Eth deposited!");
+        require(msg.value >= ENTRY_FEE, "Not enough Eth deposited!");
         s_checkIfPlayerEntered[msg.sender] += msg.value;
         s_players.push(payable(msg.sender));
 
