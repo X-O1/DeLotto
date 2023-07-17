@@ -1,5 +1,7 @@
-// ethers.js
+// Imports
 const { ethers, BigNumber } = require("ethers");
+
+// Ethers.js state variables
 const contractAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
 const abi = [
   {
@@ -21,6 +23,32 @@ const abi = [
     inputs: [],
     name: "Lottery__NotOwner",
     type: "error",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "address",
+        name: "player",
+        type: "address",
+      },
+    ],
+    name: "EnteredLottery",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "address",
+        name: "player",
+        type: "address",
+      },
+    ],
+    name: "WinnerSelected",
+    type: "event",
   },
   {
     inputs: [
@@ -90,24 +118,46 @@ const abi = [
 ];
 const provider = new ethers.providers.Web3Provider(window.ethereum);
 const signer = provider.getSigner();
-const contract = new ethers.Contract(contractAddress, abi, signer);
 const entryFee = BigNumber.from("250000000000000000");
 
 // Front-end elements
 const walletConnectButton = document.querySelector(".wallet");
-const balanceInfo = document.querySelector(".balance-info");
+const lotteryBalance = document.querySelector(".lottery-balance");
+const enterLotteryButton = document.querySelector(".enter-lottery-button");
 
+window.onload = () => {
+  updateLotteryBalance();
+};
 // Connect site to a node (MetaMask)
 const connect = async () => {
-  if (window.ethereum !== "undifined") {
+  if (window.ethereum !== "undefined") {
     try {
       await ethereum.request({ method: "eth_requestAccounts" });
+
+      ethereum.on("accountsChanged", (newAccounts) => {
+        const playerAccounts = getListOfPlayers();
+        console.log("Accounts changed", newAccounts[0]);
+
+        if (newAccounts[0] == undefined) {
+          walletConnectButton.innerHTML = "Connect Wallet";
+          enterLotteryButton.innerHTML = "Enter Lottery!";
+          enterLotteryButton.style.fontSize = "46px";
+        }
+
+        for (let i = 0; i < playerAccounts.length; i++) {
+          if (newAccounts[0] !== playerAccounts[i]) {
+            enterLotteryButton.innerHTML = "Enter Lottery!";
+            enterLotteryButton.style.fontSize = "46px";
+          } else {
+            updateFrontEnd();
+          }
+        }
+      });
+
+      walletConnectButton.innerHTML = "Connected";
     } catch (error) {
       console.log(error);
     }
-    walletConnectButton.innerHTML = "Connected";
-    const accounts = await ethereum.request({ method: "eth_accounts" });
-    console.log(accounts);
   } else {
     walletConnectButton.innerHTML = "Please install MetaMask";
   }
@@ -115,12 +165,18 @@ const connect = async () => {
 
 // Enter the Lottery
 const execute = async () => {
-  if (window.ethereum !== "undifined") {
+  const contract = new ethers.Contract(contractAddress, abi, signer);
+  if (window.ethereum !== "undefined") {
     try {
       const overrides = {
         value: entryFee,
       };
-      await contract.enterLottery(overrides);
+      const enterLotteryTransaction = await contract.enterLottery(overrides);
+      await enterLotteryTransaction.wait();
+
+      // Update front-end elements
+      updateLotteryBalance();
+      updateFrontEnd();
     } catch (error) {
       console.log(error);
     }
@@ -128,16 +184,27 @@ const execute = async () => {
     walletConnectButton.innerHTML = "Please install Metamask";
   }
 };
-// View the current Lottery balance
-const getLotteryBalance = async () => {
+
+const updateFrontEnd = () => {
+  enterLotteryButton.innerHTML = "Entered! Best of Luck!";
+  enterLotteryButton.style.fontSize = "39px";
+};
+const getListOfPlayers = () => {
+  const contract = new ethers.Contract(contractAddress, abi, provider);
+  const listOfPlayers = contract.getListOfPlayers();
+  return listOfPlayers;
+};
+const updateLotteryBalance = async () => {
   const balance = await provider.getBalance(contractAddress);
-  balanceInfo.innerHTML = `\nETH Balance of the Lottery --> ${ethers.utils.formatEther(
+  lotteryBalance.innerHTML = `\nLottery Balance: ${ethers.utils.formatEther(
     balance
-  )} ETH\n`;
+  )} Ether\n`;
 };
 
 module.exports = {
   connect,
   execute,
-  getLotteryBalance,
+  getListOfPlayers,
+  updateFrontEnd,
+  updateLotteryBalance,
 };

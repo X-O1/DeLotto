@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lottery</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" type="text/css" href="style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
@@ -27,10 +27,9 @@
                     <div class="status-title">Status</div>
                     <div class="status-light"></div>
                 </div>
-                <!-- <div class="deposit-box">
-                    <p class="deposit-title">Eth Deposit Amount:</p>
-                    <input type="number" min="10000000" step="01000000" placeholder="min. 0.01 eth">
-                </div> -->
+                <div class="lottery-balance-container">
+                    <p class="lottery-balance">Lottery Balance: 0.00 Ether</p>
+                </div>
             </div>
             <div class="middle-row">
                 <button class="enter-lottery-button" onclick="bundle.execute()">Enter Lottery!</button>
@@ -55,7 +54,7 @@
         <div class="lottery-log">
 
             <ul class="log-list">
-                <button class="lottery-balance" onclick="bundle.getLotteryBalance()">View Lottery Balance</button>
+                <!-- <button class="lottery-balance" onclick="bundle.getLotteryBalance()">View Lottery Balance</button> -->
                 <li class="balance-info"></li>
                 <li class="recent-winner">Recent Winner:</li>
                 <li class="list-of-players">Current players:</li>
@@ -65,5 +64,4 @@
         </div>
     </section>
 </body>
-
 </html>

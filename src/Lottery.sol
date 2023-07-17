@@ -29,7 +29,13 @@ contract Lottery {
     uint256 private s_lotteryBalanceAfterUserDeposit =
         address(this).balance + msg.value;
     LotteryState private s_lotteryState;
+    address private s_recentWinner;
 
+    /** Events */
+    event EnteredLottery(address indexed player);
+    event WinnerSelected(address indexed player);
+
+    /** Contructor */
     constructor() {
         s_lotteryState = LotteryState.OPEN;
         i_owner = msg.sender;
@@ -48,6 +54,8 @@ contract Lottery {
         require(msg.value >= ENTRY_FEE, "Not enough Eth deposited!");
         s_checkIfPlayerEntered[msg.sender] += msg.value;
         s_players.push(payable(msg.sender));
+
+        emit EnteredLottery(msg.sender);
 
         if (address(this).balance < LOTTERY_ENDING_THRESHOLD) {
             s_lotteryState = LotteryState.OPEN;
@@ -80,14 +88,15 @@ contract Lottery {
         );
         // Grab winning address
         uint256 winningIndex = Lottery.getWinningIndex();
-        address payable winner = s_players[winningIndex];
-
+        address payable recentWinner = s_players[winningIndex];
+        s_recentWinner = recentWinner;
         // Reset the Lottery
         s_lotteryState = LotteryState.OPEN;
         s_players = new address payable[](0);
 
+        emit WinnerSelected(recentWinner);
         // Send winnings
-        (bool success, ) = winner.call{value: address(this).balance}("");
+        (bool success, ) = recentWinner.call{value: address(this).balance}("");
         if (!success) {
             revert ChooseWinner_TransferFailed();
         }
