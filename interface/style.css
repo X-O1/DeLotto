@@ -109,6 +109,7 @@ body {
     align-items: center;
     width: 45%;
 }
+
 .lottery-balance {
     color: #0A273B;
     font-size: 28px;
@@ -232,7 +233,8 @@ body {
     background-color: #0A273B;
     display: flex;
     font-size: 32px;
-    opacity: 1; /* change with javascript */
+    opacity: 1;
+    /* change with javascript */
 }
 
 .log-list {

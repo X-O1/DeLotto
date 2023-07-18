@@ -28319,22 +28319,14 @@ utils.encode = function encode(arr, enc) {
 // Imports
 const { ethers, BigNumber } = require("ethers");
 
-// Front-end elements
-const walletConnectButton = document.querySelector(".wallet");
-const lotteryBalance = document.querySelector(".lottery-balance");
-const enterLotteryButton = document.querySelector(".enter-lottery-button");
+// Ethers.js global variables
+const provider = new ethers.providers.Web3Provider(window.ethereum);
+const signer = provider.getSigner();
 
-// Everytime site loads these functions will run first
-window.onload = () => {
-  updateLotteryBalance();
-  updateFrontEndOnLoad();
-};
-
-// Returns list of all players addresses that have entered Lottery
-const getListOfPlayers = async () => {
-  const contractAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
-  const provider = new ethers.providers.Web3Provider(window.ethereum);
-  const abi = [
+// Solidity Contracts
+const LOTTERY_CONTRACT = {
+  address: "0x5FbDB2315678afecb367f032d93F642f64180aa3",
+  abi: [
     {
       inputs: [],
       stateMutability: "nonpayable",
@@ -28446,16 +28438,34 @@ const getListOfPlayers = async () => {
       stateMutability: "view",
       type: "function",
     },
-  ];
-  const contract = new ethers.Contract(contractAddress, abi, provider);
+  ],
+  entryFee: BigNumber.from("250000000000000000"),
+};
+
+// Front-end elements
+const walletConnectButton = document.querySelector(".wallet");
+const lotteryBalance = document.querySelector(".lottery-balance");
+const enterLotteryButton = document.querySelector(".enter-lottery-button");
+
+// Everytime site loads these functions will run first
+window.onload = () => {
+  updateLotteryBalance();
+  updateFrontEndOnLoad();
+};
+
+// Returns list of all players addresses that have entered Lottery
+const getListOfPlayers = async () => {
+  const contract = new ethers.Contract(
+    LOTTERY_CONTRACT.address,
+    LOTTERY_CONTRACT.abi,
+    provider
+  );
   const listOfPlayers = await contract.getListOfPlayers();
   return listOfPlayers.map((player) => player.toLowerCase());
 };
 
 // Updates front-end everytime page reloads based on current wallet connected
 const updateFrontEndOnLoad = async () => {
-  const provider = new ethers.providers.Web3Provider(window.ethereum);
-  const signer = provider.getSigner();
   const playerAccounts = await getListOfPlayers();
 
   if (typeof window.ethereum !== undefined) {
@@ -28530,129 +28540,16 @@ const connect = async () => {
 
 // Enter the Lottery
 const execute = async () => {
-  const contractAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
-  const provider = new ethers.providers.Web3Provider(window.ethereum);
-  const signer = provider.getSigner();
-  const entryFee = BigNumber.from("250000000000000000");
-  const abi = [
-    {
-      inputs: [],
-      stateMutability: "nonpayable",
-      type: "constructor",
-    },
-    {
-      inputs: [],
-      name: "ChooseWinner_TransferFailed",
-      type: "error",
-    },
-    {
-      inputs: [],
-      name: "Deposit_Failed",
-      type: "error",
-    },
-    {
-      inputs: [],
-      name: "Lottery__NotOwner",
-      type: "error",
-    },
-    {
-      anonymous: false,
-      inputs: [
-        {
-          indexed: true,
-          internalType: "address",
-          name: "player",
-          type: "address",
-        },
-      ],
-      name: "EnteredLottery",
-      type: "event",
-    },
-    {
-      anonymous: false,
-      inputs: [
-        {
-          indexed: true,
-          internalType: "address",
-          name: "player",
-          type: "address",
-        },
-      ],
-      name: "WinnerSelected",
-      type: "event",
-    },
-    {
-      inputs: [
-        {
-          internalType: "address",
-          name: "fundingAddress",
-          type: "address",
-        },
-      ],
-      name: "checkIfPlayerEntered",
-      outputs: [
-        {
-          internalType: "uint256",
-          name: "",
-          type: "uint256",
-        },
-      ],
-      stateMutability: "view",
-      type: "function",
-    },
-    {
-      inputs: [],
-      name: "enterLottery",
-      outputs: [],
-      stateMutability: "payable",
-      type: "function",
-    },
-    {
-      inputs: [],
-      name: "getListOfPlayers",
-      outputs: [
-        {
-          internalType: "address payable[]",
-          name: "",
-          type: "address[]",
-        },
-      ],
-      stateMutability: "view",
-      type: "function",
-    },
-    {
-      inputs: [],
-      name: "getLotteryEndingThreshold",
-      outputs: [
-        {
-          internalType: "uint256",
-          name: "",
-          type: "uint256",
-        },
-      ],
-      stateMutability: "pure",
-      type: "function",
-    },
-    {
-      inputs: [],
-      name: "getRoomLeftInPool",
-      outputs: [
-        {
-          internalType: "uint256",
-          name: "",
-          type: "uint256",
-        },
-      ],
-      stateMutability: "view",
-      type: "function",
-    },
-  ];
-  const contract = new ethers.Contract(contractAddress, abi, signer);
+  const contract = new ethers.Contract(
+    LOTTERY_CONTRACT.address,
+    LOTTERY_CONTRACT.abi,
+    signer
+  );
 
   if (typeof window.ethereum !== "undefined") {
     try {
       const overrides = {
-        value: entryFee,
+        value: LOTTERY_CONTRACT.entryFee,
       };
       const enterLotteryTransaction = await contract.enterLottery(overrides);
       await enterLotteryTransaction.wait();
@@ -28670,6 +28567,11 @@ const execute = async () => {
   }
 };
 
+// Event liseners
+// const listenForLotteryWinner = async () => {
+//   const provider = new ethers.providers.Web3Provider(window.ethereum);
+// };
+
 const updateFrontEnd = () => {
   enterLotteryButton.innerHTML = "Entered! Best of Luck!";
   enterLotteryButton.style.fontSize = "39px";
@@ -28677,9 +28579,7 @@ const updateFrontEnd = () => {
 
 const updateLotteryBalance = async () => {
   try {
-    const contractAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
-    const balance = await provider.getBalance(contractAddress);
+    const balance = await provider.getBalance(LOTTERY_CONTRACT.address);
     lotteryBalance.innerHTML = `\nLottery Balance: ${ethers.utils.formatEther(
       balance
     )} Ether\n`;
