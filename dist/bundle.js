@@ -28456,12 +28456,13 @@ const recentWinnerContainer = document.querySelector(".recent-winner");
 const toggleLog = document.querySelector(".toggle-log");
 const closeLog = document.querySelector(".close-log");
 const lotteryLog = document.querySelector(".lottery-log");
+const amountWonContainer = document.querySelector(".amount-won");
+const recentWinnerTitle = document.querySelector(".recent-winner-title");
 
 // THESE FUNCTIONS WILL RUN EVERYTIME THE SITE LOADS
 window.onload = () => {
   updateLotteryBalance();
   updateFrontEndOnLoad();
-  listenForLotteryWinner();
 };
 
 // RETURNS LIST OF ALL PLAYERS THAT ENTERED THE CURRENT LOTTERY
@@ -28507,7 +28508,7 @@ const updateFrontEndOnLoad = async () => {
 };
 
 // UPDATES FRONT-END ON WALLET CHANGE
-const updateFrontEndEveryTimeWalletChanges = async () => {
+const updateFrontEndWhenWalletChanges = async () => {
   if (typeof window.ethereum !== undefined) {
     try {
       ethereum.on("accountsChanged", async (newAccounts) => {
@@ -28533,7 +28534,7 @@ const updateFrontEndEveryTimeWalletChanges = async () => {
     walletConnectButton.innerHTML = "Please install Metamask";
   }
 };
-updateFrontEndEveryTimeWalletChanges();
+updateFrontEndWhenWalletChanges();
 
 // CONNECTS SITE TO A NODE (METAMASK)
 const connect = async () => {
@@ -28550,7 +28551,7 @@ const connect = async () => {
 };
 
 // ENTERS PLAYER INTO THE LOTTERY
-const execute = async () => {
+const playerEnterLottery = async () => {
   const contract = new ethers.Contract(
     LOTTERY_CONTRACT.address,
     LOTTERY_CONTRACT.abi,
@@ -28564,6 +28565,9 @@ const execute = async () => {
       };
       const enterLotteryTransaction = await contract.enterLottery(overrides);
       await enterLotteryTransaction.wait();
+
+      // Waits for a winner to be selected and then displays winner on front-end
+      listenForLotteryWinner();
 
       // Update front-end elements
       updateLotteryBalance();
@@ -28591,19 +28595,24 @@ const listenForLotteryWinner = () => {
       player,
       amountWon,
     };
-    // console.log(`The Recent Lottery Winner was ${recentWinner.player}`);
-    recentWinnerContainer.innerHTML = `Recent Winner: ${
-      recentWinner.player
-    } Won: ${ethers.utils.formatEther(recentWinner.amountWon)} Ether`;
+    recentWinnerContainer.innerHTML = recentWinner.player;
+    amountWonContainer.innerHTML = `Won: ${ethers.utils.formatEther(
+      recentWinner.amountWon
+    )} Ether!`;
+
+    lotteryLog.style.opacity = "1";
+    toggleLog.style.display = "none";
+    closeLog.style.display = "flex";
   });
 };
-listenForLotteryWinner();
 
 // Lottery Log display
 toggleLog.addEventListener("click", () => {
   lotteryLog.style.opacity = "1";
   toggleLog.style.display = "none";
   closeLog.style.display = "flex";
+  recentWinnerTitle.innerHTML = "Recent Winner";
+  listenForLotteryWinner();
 });
 closeLog.addEventListener("click", () => {
   lotteryLog.style.opacity = "0";
@@ -28631,11 +28640,11 @@ const updateLotteryBalance = async () => {
 // EXPORTS
 module.exports = {
   connect,
-  execute,
+  playerEnterLottery,
   getListOfPlayers,
   updateFrontEnd,
   updateLotteryBalance,
-  updateFrontEndEveryTimeWalletChanges,
+  updateFrontEndWhenWalletChanges,
   updateFrontEndOnLoad,
 };
 
