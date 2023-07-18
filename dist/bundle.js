@@ -28316,14 +28316,14 @@ utils.encode = function encode(arr, enc) {
 
 }).call(this)}).call(this,require("timers").setImmediate)
 },{"timers":166}],163:[function(require,module,exports){
-// Imports
+// IMPORTS
 const { ethers, BigNumber } = require("ethers");
 
-// Ethers.js global variables
+// ETHERS.JS GLOBAL VARIABLES
 const provider = new ethers.providers.Web3Provider(window.ethereum);
 const signer = provider.getSigner();
 
-// Solidity Contracts
+// SOLIDITY CONTRACTS
 const LOTTERY_CONTRACT = {
   address: "0x5FbDB2315678afecb367f032d93F642f64180aa3",
   abi: [
@@ -28442,18 +28442,18 @@ const LOTTERY_CONTRACT = {
   entryFee: BigNumber.from("250000000000000000"),
 };
 
-// Front-end elements
+// FRONT-END ELEMENTS
 const walletConnectButton = document.querySelector(".wallet");
 const lotteryBalance = document.querySelector(".lottery-balance");
 const enterLotteryButton = document.querySelector(".enter-lottery-button");
 
-// Everytime site loads these functions will run first
+// THESE FUNCTIONS WILL RUN EVERYTIME THE SITE LOADS
 window.onload = () => {
   updateLotteryBalance();
   updateFrontEndOnLoad();
 };
 
-// Returns list of all players addresses that have entered Lottery
+// RETURNS LIST OF ALL PLAYERS THAT ENTERED THE CURRENT LOTTERY
 const getListOfPlayers = async () => {
   const contract = new ethers.Contract(
     LOTTERY_CONTRACT.address,
@@ -28464,7 +28464,7 @@ const getListOfPlayers = async () => {
   return listOfPlayers.map((player) => player.toLowerCase());
 };
 
-// Updates front-end everytime page reloads based on current wallet connected
+// UPDATES FRONT-END ON PAGE RELOAD BASED ON CURRENT WALLET CONNECTED
 const updateFrontEndOnLoad = async () => {
   const playerAccounts = await getListOfPlayers();
 
@@ -28495,7 +28495,7 @@ const updateFrontEndOnLoad = async () => {
   }
 };
 
-// Updates front-end every time wallet changes
+// UPDATES FRONT-END ON WALLET CHANGE
 const updateFrontEndEveryTimeWalletChanges = async () => {
   if (typeof window.ethereum !== undefined) {
     try {
@@ -28524,7 +28524,7 @@ const updateFrontEndEveryTimeWalletChanges = async () => {
 };
 updateFrontEndEveryTimeWalletChanges();
 
-// Connects site to a node (MetaMask)
+// CONNECTS SITE TO A NODE (METAMASK)
 const connect = async () => {
   if (typeof window.ethereum !== "undefined") {
     try {
@@ -28538,7 +28538,7 @@ const connect = async () => {
   }
 };
 
-// Enter the Lottery
+// ENTERS PLAYER INTO THE LOTTERY
 const execute = async () => {
   const contract = new ethers.Contract(
     LOTTERY_CONTRACT.address,
@@ -28567,11 +28567,12 @@ const execute = async () => {
   }
 };
 
-// Event liseners
+// EVENT LISTENERS
 // const listenForLotteryWinner = async () => {
 //   const provider = new ethers.providers.Web3Provider(window.ethereum);
 // };
 
+//MISC
 const updateFrontEnd = () => {
   enterLotteryButton.innerHTML = "Entered! Best of Luck!";
   enterLotteryButton.style.fontSize = "39px";
@@ -28588,6 +28589,7 @@ const updateLotteryBalance = async () => {
   }
 };
 
+// EXPORTS
 module.exports = {
   connect,
   execute,
