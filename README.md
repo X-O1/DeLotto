@@ -1,3 +1,3 @@
 # About 
 
-A decentralized Lottery System.
+A decentralized, automated Lottery System.
