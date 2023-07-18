@@ -1,3 +1,3 @@
-# About 
+# About ThaLoto
 
-A decentralized, automated Lottery System.
+A Decentralized, Automated Lottery System.
