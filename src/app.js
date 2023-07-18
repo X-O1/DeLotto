@@ -247,9 +247,6 @@ const execute = async () => {
       const enterLotteryTransaction = await contract.enterLottery(overrides);
       await enterLotteryTransaction.wait();
 
-      // Waits for a winner to be selected and then displays winner on front-end
-      listenForLotteryWinner();
-
       // Update front-end elements
       updateLotteryBalance();
       updateFrontEnd();
@@ -282,6 +279,7 @@ const listenForLotteryWinner = () => {
     } Won: ${ethers.utils.formatEther(recentWinner.amountWon)} Ether`;
   });
 };
+listenForLotteryWinner();
 
 // Lottery Log display
 toggleLog.addEventListener("click", () => {

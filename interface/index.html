@@ -15,7 +15,7 @@
 
 <body>
     <header class="header">
-        <div class="logo">ThaLoto</div>
+        <div class="logo">DeLoto</div>
         <button class="wallet" onclick="bundle.connect()">Connect Wallet
         </button>
 
@@ -32,7 +32,7 @@
                 </div>
             </div>
             <div class="middle-row">
-                <button class="enter-lottery-button" onclick="bundle.execute()">Connect Wallet to enter Lottery!</button>
+                <button class="enter-lottery-button" onclick="bundle.playerEnterLottery()">Connect Wallet to enter Lottery!</button>
             </div>
             <div class="bottom-row">
                 <div class="rules">
@@ -55,12 +55,8 @@
         <div class="lottery-log">
 
             <ul class="log-list">
-                <!-- <button class="lottery-balance" onclick="bundle.getLotteryBalance()">View Lottery Balance</button> -->
                 <li class="balance-info"></li>
                 <li class="recent-winner">Recent Winner:</li>
-                <!-- <li class="list-of-players">Current players:</li> -->
-                <!-- <li class="room-left-in-lottery">Available room in lottery: </li> -->
-
             </ul>
         </div>
     </section>
