@@ -28446,11 +28446,16 @@ const LOTTERY_CONTRACT = {
 const walletConnectButton = document.querySelector(".wallet");
 const lotteryBalance = document.querySelector(".lottery-balance");
 const enterLotteryButton = document.querySelector(".enter-lottery-button");
+const recentWinnerContainer = document.querySelector(".recent-winner");
+const toggleLog = document.querySelector(".toggle-log");
+const closeLog = document.querySelector(".close-log");
+const lotteryLog = document.querySelector(".lottery-log");
 
 // THESE FUNCTIONS WILL RUN EVERYTIME THE SITE LOADS
 window.onload = () => {
   updateLotteryBalance();
   updateFrontEndOnLoad();
+  listenForLotteryWinner();
 };
 
 // RETURNS LIST OF ALL PLAYERS THAT ENTERED THE CURRENT LOTTERY
@@ -28554,6 +28559,9 @@ const execute = async () => {
       const enterLotteryTransaction = await contract.enterLottery(overrides);
       await enterLotteryTransaction.wait();
 
+      // Logs last winner
+      listenForLotteryWinner();
+
       // Update front-end elements
       updateLotteryBalance();
       updateFrontEnd();
@@ -28568,10 +28576,31 @@ const execute = async () => {
 };
 
 // EVENT LISTENERS
-// const listenForLotteryWinner = async () => {
-//   const provider = new ethers.providers.Web3Provider(window.ethereum);
-// };
+const listenForLotteryWinner = () => {
+  const contract = new ethers.Contract(
+    LOTTERY_CONTRACT.address,
+    LOTTERY_CONTRACT.abi,
+    signer
+  );
+  contract.on("WinnerSelected", (player) => {
+    let recentWinner = {
+      player,
+    };
+    // console.log(`The Recent Lottery Winner was ${recentWinner.player}`);
+    recentWinnerContainer.innerHTML = `Recent Winner: ${recentWinner.player}`;
+  });
+};
 
+toggleLog.addEventListener("click", () => {
+  lotteryLog.style.opacity = "1";
+  toggleLog.style.display = "none";
+  closeLog.style.display = "flex";
+});
+closeLog.addEventListener("click", () => {
+  lotteryLog.style.opacity = "0";
+  closeLog.style.display = "none";
+  toggleLog.style.display = "flex";
+});
 //MISC
 const updateFrontEnd = () => {
   enterLotteryButton.innerHTML = "Entered! Best of Luck!";

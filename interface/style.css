@@ -222,7 +222,21 @@ body {
     font-size: 18px;
     cursor: pointer;
 }
-
+.close-log {
+    margin: -10px auto;
+    height: 20px;
+    width: 175px;
+    padding: 5px;
+    /* border: #E46432 solid .1px; */
+    border-radius: 25px;
+    background-color: #E46432;
+    color: #0A273B;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    font-size: 18px;
+    cursor: pointer;
+}
 .lottery-log {
     height: 350px;
     width: 70%;
@@ -233,7 +247,8 @@ body {
     background-color: #0A273B;
     display: flex;
     font-size: 32px;
-    opacity: 1;
+    opacity: 0;
+    transition: opacity 300ms;
     /* change with javascript */
 }
 
