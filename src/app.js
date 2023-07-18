@@ -1,11 +1,11 @@
-// IMPORTS
+/** IMPORTS  */
 const { ethers, BigNumber } = require("ethers");
 
-// ETHERS.JS GLOBAL VARIABLES
+/** ETHERS.JS GLOBAL VARIABLES */
 const provider = new ethers.providers.Web3Provider(window.ethereum);
 const signer = provider.getSigner();
 
-// SOLIDITY CONTRACTS
+/** SOLIDITY CONTRACTS */
 const LOTTERY_CONTRACT = {
   address: "0x5FbDB2315678afecb367f032d93F642f64180aa3",
   abi: [
@@ -130,7 +130,7 @@ const LOTTERY_CONTRACT = {
   entryFee: BigNumber.from("250000000000000000"),
 };
 
-// FRONT-END ELEMENTS
+/** FRONT-END ELEMENTS */
 const walletConnectButton = document.querySelector(".wallet");
 const lotteryBalance = document.querySelector(".lottery-balance");
 const enterLotteryButton = document.querySelector(".enter-lottery-button");
@@ -263,7 +263,8 @@ const execute = async () => {
   }
 };
 
-// EVENT LISTENERS
+/** EVENT LISTENERS */
+// Find most recent lottery winner and display it on front-end
 const listenForLotteryWinner = () => {
   const contract = new ethers.Contract(
     LOTTERY_CONTRACT.address,
@@ -282,6 +283,7 @@ const listenForLotteryWinner = () => {
   });
 };
 
+// Lottery Log display
 toggleLog.addEventListener("click", () => {
   lotteryLog.style.opacity = "1";
   toggleLog.style.display = "none";
@@ -292,7 +294,8 @@ closeLog.addEventListener("click", () => {
   closeLog.style.display = "none";
   toggleLog.style.display = "flex";
 });
-//MISC
+
+/** MISC */
 const updateFrontEnd = () => {
   enterLotteryButton.innerHTML = "Entered! Best of Luck!";
   enterLotteryButton.style.fontSize = "39px";
