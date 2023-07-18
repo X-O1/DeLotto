@@ -247,7 +247,7 @@ const execute = async () => {
       const enterLotteryTransaction = await contract.enterLottery(overrides);
       await enterLotteryTransaction.wait();
 
-      // Logs last winner
+      // Waits for a winner to be selected and then displays winner on front-end
       listenForLotteryWinner();
 
       // Update front-end elements

@@ -26,8 +26,7 @@ contract Lottery {
     uint256 private constant ENTRY_FEE = 0.25 ether;
     address payable[] private s_players;
     mapping(address => uint256) private s_checkIfPlayerEntered;
-    uint256 private s_lotteryBalanceAfterUserDeposit =
-        address(this).balance + msg.value;
+    mapping(address => bool) private s_hasEntered;
     LotteryState private s_lotteryState;
     address private s_recentWinner;
 
@@ -44,14 +43,13 @@ contract Lottery {
     // ENTER THE LOTTERY
     function enterLottery() public payable {
         require(s_lotteryState == LotteryState.OPEN, "Lottery is not open.");
-        for (uint256 i = 0; i < s_players.length; i++) {
-            require(
-                msg.sender != s_players[i],
-                "This address was already used. 1 entry per address."
-            );
-        }
+        require(
+            !s_hasEntered[msg.sender],
+            "This address was already used. 1 entry per address."
+        );
         require(msg.sender != i_owner, "Contract owner can not enter lottery.");
         require(msg.value >= ENTRY_FEE, "Not enough Eth deposited!");
+
         s_checkIfPlayerEntered[msg.sender] += msg.value;
         s_players.push(payable(msg.sender));
 
