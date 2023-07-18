@@ -33,7 +33,7 @@ contract Lottery {
 
     /** Events */
     event EnteredLottery(address indexed player);
-    event WinnerSelected(address indexed player);
+    event WinnerSelected(address indexed player, uint256 indexed amountWon);
 
     /** Contructor */
     constructor() {
@@ -94,7 +94,7 @@ contract Lottery {
         s_lotteryState = LotteryState.OPEN;
         s_players = new address payable[](0);
 
-        emit WinnerSelected(recentWinner);
+        emit WinnerSelected(recentWinner, address(this).balance);
         // Send winnings
         (bool success, ) = recentWinner.call{value: address(this).balance}("");
         if (!success) {

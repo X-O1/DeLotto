@@ -51,6 +51,12 @@ const LOTTERY_CONTRACT = {
           name: "player",
           type: "address",
         },
+        {
+          indexed: true,
+          internalType: "uint256",
+          name: "amountWon",
+          type: "uint256",
+        },
       ],
       name: "WinnerSelected",
       type: "event",
@@ -264,12 +270,15 @@ const listenForLotteryWinner = () => {
     LOTTERY_CONTRACT.abi,
     signer
   );
-  contract.on("WinnerSelected", (player) => {
+  contract.on("WinnerSelected", (player, amountWon) => {
     let recentWinner = {
       player,
+      amountWon,
     };
     // console.log(`The Recent Lottery Winner was ${recentWinner.player}`);
-    recentWinnerContainer.innerHTML = `Recent Winner: ${recentWinner.player}`;
+    recentWinnerContainer.innerHTML = `Recent Winner: ${
+      recentWinner.player
+    } Won: ${ethers.utils.formatEther(recentWinner.amountWon)} Ether`;
   });
 };
 
