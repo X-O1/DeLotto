@@ -28467,8 +28467,8 @@ const updateFrontEndOnLoad = async () => {
       );
       if (connectedAddress === undefined) {
         walletConnectButton.innerHTML = "Connect Wallet";
-        enterLotteryButton.innerHTML = "Enter Lottery!";
-        enterLotteryButton.style.fontSize = "46px";
+        enterLotteryButton.innerHTML = "Connect Wallet to enter Lottery!";
+        enterLotteryButton.style.fontSize = "32px";
       } else if (accountEntered) {
         updateFrontEnd();
         walletConnectButton.innerHTML = "Connected";
@@ -28496,8 +28496,8 @@ const updateFrontEndEveryTimeWalletChanges = async () => {
 
         if (newAccounts[0] === undefined) {
           walletConnectButton.innerHTML = "Connect Wallet";
-          enterLotteryButton.innerHTML = "Enter Lottery!";
-          enterLotteryButton.style.fontSize = "46px";
+          enterLotteryButton.innerHTML = "Connect Wallet to enter Lottery!";
+          enterLotteryButton.style.fontSize = "32px";
         } else if (accountEntered) {
           updateFrontEnd();
         } else {
@@ -28528,7 +28528,7 @@ const connect = async () => {
   }
 };
 
-// Enters the Lottery
+// Enter the Lottery
 const execute = async () => {
   const contractAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
   const provider = new ethers.providers.Web3Provider(window.ethereum);
@@ -28661,7 +28661,9 @@ const execute = async () => {
       updateLotteryBalance();
       updateFrontEnd();
     } catch (error) {
-      error = console.log("This address has already entered the Lottery.");
+      error = console.log(
+        "ERROR: Wallet not connected or this address has already entered the Lottery."
+      );
     }
   } else {
     walletConnectButton.innerHTML = "Please install Metamask";
