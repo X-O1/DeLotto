@@ -119,6 +119,7 @@ contract Lottery is VRFConsumerBaseV2 {
             );
         }
         s_lotteryState = LotteryState.CALCULATING;
+
         uint256 requestId = i_vrfCoordinator.requestRandomWords(
             i_gasLane,
             i_subscriptionId,
