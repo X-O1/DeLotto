@@ -11,21 +11,18 @@ contract DeployLottery is Script {
         HelperConfig helperConfig = new HelperConfig();
         (
             uint256 entryFee,
-            uint256 interval,
-            address vrfCoordinator,
+            address vrfCoordinatorV2,
             bytes32 gasLane,
             uint64 subscriptionId,
-            uint32 callbackGasLimit,
-
+            uint32 callbackGasLimit
         ) = helperConfig.activeNetworkConfig();
         vm.startBroadcast();
         Lottery lottery = new Lottery(
-            entryFee,
-            interval,
-            vrfCoordinator,
-            gasLane,
             subscriptionId,
-            callbackGasLimit
+            gasLane,
+            entryFee,
+            callbackGasLimit,
+            vrfCoordinatorV2
         );
         vm.stopBroadcast();
         return (lottery, helperConfig);

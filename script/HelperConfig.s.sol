@@ -9,12 +9,10 @@ import {VRFCoordinatorV2Mock} from "@chainlink/contracts/src/v0.8/mocks/VRFCoord
 contract HelperConfig is Script {
     struct NetworkConfig {
         uint256 entryFee;
-        uint256 interval;
-        address vrfCoordinator;
+        address vrfCoordinatorV2;
         bytes32 gasLane;
         uint64 subscriptionId;
         uint32 callbackGasLimit;
-        uint256 deployerKey;
     }
     uint256 public constant DEFAULT_ANVIL_KEY =
         0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80;
@@ -30,23 +28,21 @@ contract HelperConfig is Script {
 
     function getSepoliaNetworkConfig()
         public
-        view
+        pure
         returns (NetworkConfig memory)
     {
         return
             NetworkConfig({
                 entryFee: 0.01 ether,
-                interval: 30,
-                vrfCoordinator: 0x8103B0A8A00be2DDC778e6e7eaa21791Cd364625,
+                vrfCoordinatorV2: 0x8103B0A8A00be2DDC778e6e7eaa21791Cd364625,
                 gasLane: 0x474e34a077df58807dbe9c96d3c009b23b3c6d0cce433e59bbf5b34f823bc56c,
                 subscriptionId: 3748,
-                callbackGasLimit: 2500000,
-                deployerKey: vm.envUint("PRIVATE_KEY")
+                callbackGasLimit: 2500000
             });
     }
 
     function getOrCreateAnvilEthConfig() public returns (NetworkConfig memory) {
-        if (activeNetworkConfig.vrfCoordinator != address(0)) {
+        if (activeNetworkConfig.vrfCoordinatorV2 != address(0)) {
             return activeNetworkConfig;
         }
 
@@ -63,12 +59,10 @@ contract HelperConfig is Script {
         return
             NetworkConfig({
                 entryFee: 0.01 ether,
-                interval: 30,
-                vrfCoordinator: address(vrfCoordinatorMock),
+                vrfCoordinatorV2: address(vrfCoordinatorMock),
                 gasLane: 0x474e34a077df58807dbe9c96d3c009b23b3c6d0cce433e59bbf5b34f823bc56c,
                 subscriptionId: 3748,
-                callbackGasLimit: 50000,
-                deployerKey: DEFAULT_ANVIL_KEY
+                callbackGasLimit: 50000
             });
     }
 }

@@ -36,7 +36,6 @@ contract Lottery is VRFConsumerBaseV2 {
     bytes32 private immutable i_gasLane;
     uint64 private immutable i_subscriptionId;
     uint32 private immutable i_callbackGasLimit;
-    uint256 private immutable i_interval;
     uint256 private immutable i_entryFee;
 
     uint16 private constant REQUEST_CONFIRMATIONS = 3;
@@ -47,7 +46,6 @@ contract Lottery is VRFConsumerBaseV2 {
     mapping(address => bool) private s_hasEntered;
     LotteryState private s_lotteryState;
     address private s_recentWinner;
-    uint256 private s_lastTimeStamp;
     uint256 private s_numberOfLotteryRounds;
 
     /** Events */
@@ -58,20 +56,17 @@ contract Lottery is VRFConsumerBaseV2 {
 
     /** Contructor */
     constructor(
-        uint256 entryFee,
-        uint256 interval,
-        address vrfCoordinator,
-        bytes32 gasLane,
         uint64 subscriptionId,
-        uint32 callbackGasLimit
-    ) VRFConsumerBaseV2(vrfCoordinator) {
+        bytes32 gasLane, // keyHash
+        uint256 entryFee,
+        uint32 callbackGasLimit,
+        address vrfCoordinatorV2
+    ) VRFConsumerBaseV2(vrfCoordinatorV2) {
         i_owner = msg.sender;
-        i_interval = interval;
         i_entryFee = entryFee;
         s_lotteryState = LotteryState.OPEN;
-        s_lastTimeStamp = block.timestamp;
         s_numberOfLotteryRounds = 0;
-        i_vrfCoordinator = VRFCoordinatorV2Interface(vrfCoordinator);
+        i_vrfCoordinator = VRFCoordinatorV2Interface(vrfCoordinatorV2);
         i_gasLane = gasLane;
         i_subscriptionId = subscriptionId;
         i_callbackGasLimit = callbackGasLimit;
@@ -93,34 +88,11 @@ contract Lottery is VRFConsumerBaseV2 {
         emit EnteredLottery(msg.sender);
     }
 
-    // UPKEEP
-    function checkUpKeep(
-        bytes memory
-    ) public view returns (bool upkeepNeeded, bytes memory /* performData */) {
-        bool timeHasPassed = (s_lastTimeStamp - block.timestamp) >= i_interval;
-        bool lotteryIsOpen = s_lotteryState == LotteryState.OPEN;
-        bool playersHaveEntered = s_players.length > 0;
-        bool hasBalance = address(this).balance > 0;
-        upkeepNeeded = (timeHasPassed &&
-            lotteryIsOpen &&
-            playersHaveEntered &&
-            hasBalance);
-        return (upkeepNeeded, "0x0");
-    }
-
     // CHOOSE WINNER
-    function performUpKeep(bytes calldata /* performData */) external {
-        (bool upkeepNeeded, ) = checkUpKeep("");
-        if (!upkeepNeeded) {
-            revert Lottery_UpkeepNotNeeded(
-                address(this).balance,
-                s_players.length,
-                LotteryState(s_lotteryState)
-            );
-        }
+    function chooseWinnner() external returns (uint256 requestId) {
         s_lotteryState = LotteryState.CALCULATING;
 
-        uint256 requestId = i_vrfCoordinator.requestRandomWords(
+        requestId = i_vrfCoordinator.requestRandomWords(
             i_gasLane,
             i_subscriptionId,
             REQUEST_CONFIRMATIONS,
@@ -128,11 +100,12 @@ contract Lottery is VRFConsumerBaseV2 {
             NUM_WORDS
         );
         emit RequestedLotteryWinner(requestId);
+        return requestId;
     }
 
     // WITHRAW FUNDS TO WINNING ADDRESS
     function fulfillRandomWords(
-        uint256 /* requestId */,
+        uint256 requestId,
         uint256[] memory randomWords
     ) internal override {
         require(s_players.length > 0, "No players have entered the Lottery.");
@@ -142,6 +115,7 @@ contract Lottery is VRFConsumerBaseV2 {
         uint256 winningIndex = randomWords[0] % s_players.length;
         address payable recentWinner = s_players[winningIndex];
         s_recentWinner = recentWinner;
+
         // Reset the Lottery
         s_lotteryState = LotteryState.OPEN;
         s_players = new address payable[](0);
@@ -151,6 +125,7 @@ contract Lottery is VRFConsumerBaseV2 {
         // Emit events
         emit WinnerSelected(recentWinner, address(this).balance);
         emit NumOfLotteryRounds(s_numberOfLotteryRounds);
+        emit RequestedLotteryWinner(requestId);
         // Send winnings
         (bool success, ) = recentWinner.call{value: address(this).balance}("");
         if (!success) {
