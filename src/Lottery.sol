@@ -39,7 +39,6 @@ contract Lottery is VRFConsumerBaseV2 {
     uint256 private immutable i_interval;
     uint256 private immutable i_entryFee;
 
-    // uint256 private constant LOTTERY_ENDING_THRESHOLD = 1 ether;
     uint16 private constant REQUEST_CONFIRMATIONS = 3;
     uint32 private constant NUM_WORDS = 1;
 
@@ -92,14 +91,6 @@ contract Lottery is VRFConsumerBaseV2 {
         s_players.push(payable(msg.sender));
 
         emit EnteredLottery(msg.sender);
-
-        // if (address(this).balance < LOTTERY_ENDING_THRESHOLD) {
-        //     s_lotteryState = LotteryState.OPEN;
-        // } else if (address(this).balance >= LOTTERY_ENDING_THRESHOLD) {
-        //     s_lotteryState = LotteryState.CALCULATING;
-        // } else {
-        //     revert Lottery_State_Not_Determined();
-        // }
     }
 
     // UPKEEP
@@ -166,18 +157,6 @@ contract Lottery is VRFConsumerBaseV2 {
         }
     }
 
-    /** Getter Functions */
-    // function getRoomLeftInPool() external view returns (uint256) {
-    //     require(
-    //         s_lotteryState == LotteryState.OPEN,
-    //         "No room left lottery is closed."
-    //     );
-
-    //     uint256 roomLeftInLottery = LOTTERY_ENDING_THRESHOLD -
-    //         address(this).balance;
-    //     return roomLeftInLottery;
-    // }
-
     function getListOfPlayers()
         external
         view
@@ -198,8 +177,4 @@ contract Lottery is VRFConsumerBaseV2 {
     ) external view returns (uint256) {
         return s_checkIfPlayerEntered[fundingAddress];
     }
-
-    // function getLotteryEndingThreshold() external pure returns (uint256) {
-    //     return LOTTERY_ENDING_THRESHOLD;
-    // }
 }
