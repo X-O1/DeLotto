@@ -59,7 +59,7 @@ body {
     margin: 0px auto;
     width: 45%;
     height: 325px;
-    border: groove #E46432 1px;
+    border: solid #E46432 1px;
     border-radius: 20px;
     display: flex;
     flex-direction: column;

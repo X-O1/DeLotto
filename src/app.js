@@ -26,6 +26,11 @@ const LOTTERY_CONTRACT = {
     },
     {
       inputs: [],
+      name: "Lottery_State_Not_Determined",
+      type: "error",
+    },
+    {
+      inputs: [],
       name: "Lottery__NotOwner",
       type: "error",
     },

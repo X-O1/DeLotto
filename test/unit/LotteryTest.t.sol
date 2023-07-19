@@ -1,27 +1,47 @@
-// SPDX-License-Identifier: MIT
+// // SPDX-License-Identifier: MIT
 
-// Contract Objectives:
-// Tests all functionality for the contract: Lottery.sol
+// // Contract Objectives:
+// // Tests all functionality for the contract: Lottery.sol
 
 pragma solidity ^0.8.18;
 
 import {Test, console} from "forge-std/Test.sol";
 import {Lottery} from "../../src/Lottery.sol";
 import {DeployLottery} from "../../script/DeployLottery.s.sol";
+import {HelperConfig} from "../../script/HelperConfig.s.sol";
 
 contract LotteryTest is Test {
     Lottery lottery;
+    HelperConfig helperConfig;
+
+    uint256 entryFee;
+    uint256 interval;
+    address vrfCoordinator;
+    bytes32 gasLane;
+    uint64 subscriptionId;
+    uint32 callbackGasLimit;
+    uint256 deployerKey;
 
     address USER = makeAddr("user");
     address USER2 = makeAddr("user2");
     address USER3 = makeAddr("user3");
     address USER4 = makeAddr("user4");
     uint256 private constant STARTING_BALANCE = 5 ether;
-    uint256 private constant SEND_VALUE = .1 ether;
+    uint256 private constant SEND_VALUE = .25 ether;
 
     function setUp() external {
         DeployLottery deployLottery = new DeployLottery();
-        lottery = deployLottery.run();
+        (lottery, helperConfig) = deployLottery.run();
+        (
+            entryFee,
+            interval,
+            vrfCoordinator,
+            gasLane,
+            subscriptionId,
+            callbackGasLimit,
+            deployerKey
+        ) = helperConfig.activeNetworkConfig();
+
         vm.deal(USER, STARTING_BALANCE);
         vm.deal(USER2, STARTING_BALANCE);
         vm.deal(USER3, STARTING_BALANCE);
@@ -39,22 +59,23 @@ contract LotteryTest is Test {
         vm.prank(USER);
         lottery.enterLottery{value: .9 ether}();
         vm.prank(USER2);
-        lottery.enterLottery{value: .1 ether}();
+        lottery.enterLottery{value: .25 ether}();
         vm.prank(USER3);
-        lottery.enterLottery{value: .1 ether}();
+        lottery.enterLottery{value: .25 ether}();
         vm.prank(USER4);
         lottery.enterLottery{value: .5 ether}();
         console.log(address(lottery).balance);
     }
 
-    function testUserCanOnlyEnterOncePerAddress() public funded {
-        vm.expectRevert();
+    function testUserCanOnlyEnterOncePerAddress() public {
         vm.prank(USER);
+        lottery.enterLottery{value: SEND_VALUE}();
+        vm.expectRevert();
         lottery.enterLottery{value: SEND_VALUE}();
         vm.prank(USER2);
         lottery.enterLottery{value: SEND_VALUE}();
-        vm.expectRevert();
         vm.prank(USER);
+        vm.expectRevert();
         lottery.enterLottery{value: SEND_VALUE}();
     }
 
