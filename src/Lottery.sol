@@ -101,17 +101,6 @@ contract Lottery {
     }
 
     /** Getter Functions */
-    function getRoomLeftInPool() external view returns (uint256) {
-        require(
-            s_lotteryState == LotteryState.OPEN,
-            "No room left lottery is closed."
-        );
-
-        uint256 roomLeftInLottery = LOTTERY_ENDING_THRESHOLD -
-            address(this).balance;
-        return roomLeftInLottery;
-    }
-
     function getListOfPlayers()
         external
         view
@@ -131,9 +120,5 @@ contract Lottery {
         address fundingAddress
     ) external view returns (uint256) {
         return s_checkIfPlayerEntered[fundingAddress];
-    }
-
-    function getLotteryEndingThreshold() external pure returns (uint256) {
-        return LOTTERY_ENDING_THRESHOLD;
     }
 }
