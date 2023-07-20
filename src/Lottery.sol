@@ -17,12 +17,6 @@ contract Lottery is VRFConsumerBaseV2 {
     error ChooseWinner_TransferFailed();
     error Lottery__NotOwner();
     error Deposit_Failed();
-    error Lottery_State_Not_Determined();
-    error Lottery_UpkeepNotNeeded(
-        uint256 currentBalance,
-        uint256 numPlayers,
-        LotteryState lotteryState
-    );
 
     /*Type declarations */
     enum LotteryState {
@@ -90,6 +84,8 @@ contract Lottery is VRFConsumerBaseV2 {
 
     // CHOOSE WINNER
     function chooseWinnner() external returns (uint256 requestId) {
+        require(s_players.length > 0, "No players have entered the Lottery.");
+        require(address(this).balance > 0, "No funds in lottery.");
         s_lotteryState = LotteryState.CALCULATING;
 
         requestId = i_vrfCoordinator.requestRandomWords(
@@ -99,6 +95,7 @@ contract Lottery is VRFConsumerBaseV2 {
             i_callbackGasLimit,
             NUM_WORDS
         );
+
         emit RequestedLotteryWinner(requestId);
         return requestId;
     }
@@ -108,9 +105,6 @@ contract Lottery is VRFConsumerBaseV2 {
         uint256 requestId,
         uint256[] memory randomWords
     ) internal override {
-        require(s_players.length > 0, "No players have entered the Lottery.");
-        require(address(this).balance > 0, "No funds in lottery.");
-
         // Grab winning address
         uint256 winningIndex = randomWords[0] % s_players.length;
         address payable recentWinner = s_players[winningIndex];
@@ -126,6 +120,7 @@ contract Lottery is VRFConsumerBaseV2 {
         emit WinnerSelected(recentWinner, address(this).balance);
         emit NumOfLotteryRounds(s_numberOfLotteryRounds);
         emit RequestedLotteryWinner(requestId);
+
         // Send winnings
         (bool success, ) = recentWinner.call{value: address(this).balance}("");
         if (!success) {
