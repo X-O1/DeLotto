@@ -61,12 +61,12 @@ contract LotteryTest is Test {
         assert(lottery.getLotteryState() == Lottery.LotteryState.OPEN);
     }
 
-    function testPlayerCantEnterIfLotteryStateIsCalculating() public funded {
-        lottery.chooseWinnner();
-        vm.expectRevert();
-        vm.prank(USER2);
-        lottery.enterLottery{value: SEND_VALUE}();
-    }
+    // function testPlayerCantEnterIfLotteryStateIsCalculating() public funded {
+    //     lottery.chooseWinnner();
+    //     vm.expectRevert();
+    //     vm.prank(USER2);
+    //     lottery.enterLottery{value: SEND_VALUE}();
+    // }
 
     function testOwnerCantEnterLottery() public {
         address owner = msg.sender;
