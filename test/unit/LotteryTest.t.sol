@@ -68,5 +68,4 @@ contract LotteryTest is Test {
         uint256 checkIfPlayerEntered = lottery.checkIfPlayerEntered(USER);
         assertEq(checkIfPlayerEntered, SEND_VALUE);
     }
-    // Testings Getter functions
 }
