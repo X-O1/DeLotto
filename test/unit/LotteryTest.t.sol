@@ -1,7 +1,7 @@
-// // SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: MIT
 
-// // Contract Objectives:
-// // Tests all functionality for the contract: Lottery.sol
+// Contract Objectives:
+// Tests all functionality for the contract: Lottery.sol
 
 pragma solidity ^0.8.18;
 
@@ -15,12 +15,16 @@ contract LotteryTest is Test {
     HelperConfig helperConfig;
 
     uint256 entryFee;
-    uint256 interval;
-    address vrfCoordinator;
+    address vrfCoordinatorV2;
     bytes32 gasLane;
     uint64 subscriptionId;
     uint32 callbackGasLimit;
-    uint256 deployerKey;
+
+    /** Events */
+    event NumOfLotteryRounds(uint256 indexed rounds);
+    event EnteredLottery(address indexed player);
+    event WinnerSelected(address indexed player, uint256 indexed amountWon);
+    event RequestedLotteryWinner(uint256 indexed requestId);
 
     address USER = makeAddr("user");
     address USER2 = makeAddr("user2");
@@ -34,12 +38,10 @@ contract LotteryTest is Test {
         (lottery, helperConfig) = deployLottery.run();
         (
             entryFee,
-            interval,
-            vrfCoordinator,
+            vrfCoordinatorV2,
             gasLane,
             subscriptionId,
-            callbackGasLimit,
-            deployerKey
+            callbackGasLimit
         ) = helperConfig.activeNetworkConfig();
 
         vm.deal(USER, STARTING_BALANCE);
@@ -54,28 +56,30 @@ contract LotteryTest is Test {
         _;
     }
 
-    // Testing enterLottery()
-    function testThatTheLotteryStateIsCheckedAndUpdated() public {
-        vm.prank(USER);
-        lottery.enterLottery{value: .9 ether}();
+    // TESTING enterLottery()
+    function testLotteryState() public view {
+        assert(lottery.getLotteryState() == Lottery.LotteryState.OPEN);
+    }
+
+    function testPlayerCantEnterIfLotteryStateIsCalculating() public funded {
+        lottery.chooseWinnner();
+        vm.expectRevert();
         vm.prank(USER2);
-        lottery.enterLottery{value: .25 ether}();
-        vm.prank(USER3);
-        lottery.enterLottery{value: .25 ether}();
-        vm.prank(USER4);
-        lottery.enterLottery{value: .5 ether}();
-        console.log(address(lottery).balance);
+        lottery.enterLottery{value: SEND_VALUE}();
+    }
+
+    function testOwnerCantEnterLottery() public {
+        address owner = msg.sender;
+        vm.prank(owner);
+        vm.expectRevert();
+        lottery.enterLottery{value: SEND_VALUE}();
     }
 
     function testUserCanOnlyEnterOncePerAddress() public {
         vm.prank(USER);
         lottery.enterLottery{value: SEND_VALUE}();
         vm.expectRevert();
-        lottery.enterLottery{value: SEND_VALUE}();
-        vm.prank(USER2);
-        lottery.enterLottery{value: SEND_VALUE}();
         vm.prank(USER);
-        vm.expectRevert();
         lottery.enterLottery{value: SEND_VALUE}();
     }
 
@@ -85,8 +89,31 @@ contract LotteryTest is Test {
         lottery.enterLottery{value: 0.001 ether}();
     }
 
+    function testIfPlayerHasEntered() public funded {
+        bool hasPlayerEntered = lottery.getIfPlayerHasEntered(USER);
+        assertEq(hasPlayerEntered, true);
+    }
+
     function testIfDataStrutureUpdates() public funded {
-        uint256 checkIfPlayerEntered = lottery.checkIfPlayerEntered(USER);
-        assertEq(checkIfPlayerEntered, SEND_VALUE);
+        uint256 playerEntryDeposit = lottery.getPlayersEntryDeposit(USER);
+        assertEq(playerEntryDeposit, SEND_VALUE);
+    }
+
+    function testIfPlayerWasAddedToPayablePlayersList() public funded {
+        address payable[] memory players = lottery.getListOfPlayers();
+        assertEq(players[0], USER);
+    }
+
+    function testEventEnteredLotteryEmits() public {
+        vm.prank(USER);
+        vm.expectEmit(true, false, false, false, address(lottery));
+        emit EnteredLottery(USER);
+        lottery.enterLottery{value: SEND_VALUE}();
+    }
+
+    // TESTING chooseWinner()
+    function testBeforeChoosingAWinnerThereMustBeAtLeastOnePlayer() public {
+        vm.expectRevert();
+        lottery.chooseWinnner();
     }
 }

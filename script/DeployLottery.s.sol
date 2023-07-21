@@ -5,6 +5,7 @@ pragma solidity ^0.8.18;
 import {Script} from "forge-std/Script.sol";
 import {Lottery} from "../src/Lottery.sol";
 import {HelperConfig} from "./HelperConfig.s.sol";
+import {AddConsumer} from "script/Interactions.s.sol";
 
 contract DeployLottery is Script {
     function run() external returns (Lottery, HelperConfig) {
@@ -25,6 +26,7 @@ contract DeployLottery is Script {
             vrfCoordinatorV2
         );
         vm.stopBroadcast();
+
         return (lottery, helperConfig);
     }
 }
