@@ -7,10 +7,36 @@ const signer = provider.getSigner();
 
 /** SOLIDITY CONTRACTS */
 const LOTTERY_CONTRACT = {
-  address: "0x5FbDB2315678afecb367f032d93F642f64180aa3",
+  address: "0x2346aa2139c4c7E8d1ddc3AF81fe900D486215EF",
   abi: [
     {
-      inputs: [],
+      inputs: [
+        {
+          internalType: "uint64",
+          name: "subscriptionId",
+          type: "uint64",
+        },
+        {
+          internalType: "bytes32",
+          name: "gasLane",
+          type: "bytes32",
+        },
+        {
+          internalType: "uint256",
+          name: "entryFee",
+          type: "uint256",
+        },
+        {
+          internalType: "uint32",
+          name: "callbackGasLimit",
+          type: "uint32",
+        },
+        {
+          internalType: "address",
+          name: "vrfCoordinatorV2",
+          type: "address",
+        },
+      ],
       stateMutability: "nonpayable",
       type: "constructor",
     },
@@ -26,12 +52,23 @@ const LOTTERY_CONTRACT = {
     },
     {
       inputs: [],
-      name: "Lottery_State_Not_Determined",
+      name: "Lottery__NotOwner",
       type: "error",
     },
     {
-      inputs: [],
-      name: "Lottery__NotOwner",
+      inputs: [
+        {
+          internalType: "address",
+          name: "have",
+          type: "address",
+        },
+        {
+          internalType: "address",
+          name: "want",
+          type: "address",
+        },
+      ],
+      name: "OnlyCoordinatorCanFulfill",
       type: "error",
     },
     {
@@ -45,6 +82,32 @@ const LOTTERY_CONTRACT = {
         },
       ],
       name: "EnteredLottery",
+      type: "event",
+    },
+    {
+      anonymous: false,
+      inputs: [
+        {
+          indexed: true,
+          internalType: "uint256",
+          name: "rounds",
+          type: "uint256",
+        },
+      ],
+      name: "NumOfLotteryRounds",
+      type: "event",
+    },
+    {
+      anonymous: false,
+      inputs: [
+        {
+          indexed: true,
+          internalType: "uint256",
+          name: "requestId",
+          type: "uint256",
+        },
+      ],
+      name: "RequestedLotteryWinner",
       type: "event",
     },
     {
@@ -67,22 +130,16 @@ const LOTTERY_CONTRACT = {
       type: "event",
     },
     {
-      inputs: [
-        {
-          internalType: "address",
-          name: "fundingAddress",
-          type: "address",
-        },
-      ],
-      name: "checkIfPlayerEntered",
+      inputs: [],
+      name: "chooseWinnner",
       outputs: [
         {
           internalType: "uint256",
-          name: "",
+          name: "requestId",
           type: "uint256",
         },
       ],
-      stateMutability: "view",
+      stateMutability: "nonpayable",
       type: "function",
     },
     {
@@ -90,6 +147,25 @@ const LOTTERY_CONTRACT = {
       name: "enterLottery",
       outputs: [],
       stateMutability: "payable",
+      type: "function",
+    },
+    {
+      inputs: [
+        {
+          internalType: "address",
+          name: "fundingAddress",
+          type: "address",
+        },
+      ],
+      name: "getIfPlayerHasEntered",
+      outputs: [
+        {
+          internalType: "bool",
+          name: "",
+          type: "bool",
+        },
+      ],
+      stateMutability: "view",
       type: "function",
     },
     {
@@ -107,20 +183,26 @@ const LOTTERY_CONTRACT = {
     },
     {
       inputs: [],
-      name: "getLotteryEndingThreshold",
+      name: "getLotteryState",
       outputs: [
         {
-          internalType: "uint256",
+          internalType: "enum Lottery.LotteryState",
           name: "",
-          type: "uint256",
+          type: "uint8",
         },
       ],
-      stateMutability: "pure",
+      stateMutability: "view",
       type: "function",
     },
     {
-      inputs: [],
-      name: "getRoomLeftInPool",
+      inputs: [
+        {
+          internalType: "address",
+          name: "fundingAddress",
+          type: "address",
+        },
+      ],
+      name: "getPlayersEntryDeposit",
       outputs: [
         {
           internalType: "uint256",
@@ -131,8 +213,26 @@ const LOTTERY_CONTRACT = {
       stateMutability: "view",
       type: "function",
     },
+    {
+      inputs: [
+        {
+          internalType: "uint256",
+          name: "requestId",
+          type: "uint256",
+        },
+        {
+          internalType: "uint256[]",
+          name: "randomWords",
+          type: "uint256[]",
+        },
+      ],
+      name: "rawFulfillRandomWords",
+      outputs: [],
+      stateMutability: "nonpayable",
+      type: "function",
+    },
   ],
-  entryFee: BigNumber.from("250000000000000000"),
+  entryFee: BigNumber.from("10000000000000000"),
 };
 
 /** FRONT-END ELEMENTS */

@@ -67,4 +67,12 @@ contract HelperConfig is Script {
                 // deployerKey: vm.envUint("ANVIL_PRIVATE_KEY")
             });
     }
+
+    function getActiveNetworkConfig()
+        external
+        view
+        returns (NetworkConfig memory)
+    {
+        return activeNetworkConfig;
+    }
 }
