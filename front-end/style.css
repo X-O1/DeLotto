@@ -65,7 +65,7 @@ body {
     flex-direction: column;
     background-color: #49E9A6;
     box-sizing: border-box;
-    padding: 0px 25px 6px;
+    padding: 0px 25px 10px;
 }
 
 .top-row,
@@ -168,20 +168,20 @@ body {
 
 .rules {
     height: 100%;
-    width: 66%;
+    width: 60%;
     border-radius: 0px 10px 0px 0px;
     display: flex;
-    justify-content: center;
+    justify-content: left;
     align-items: center;
     padding: 0;
-    margin: 0;
+    margin: 0 0 0 20px;
     color: #0A273B;
     border-bottom: none;
 }
 
 .rules p {
     margin: 0px;
-    font-size: 25px;
+    font-size: 28px;
     margin-right: -10px;
 }
 
@@ -191,21 +191,28 @@ body {
     color: #41469D;
 }
 
-.fees {
+.timer {
     height: 100%;
-    width: 33%;
+    width: 40%;
     border-radius: 10px 0px 0px 0px;
     display: flex;
-    font-size: 24px;
-    justify-content: center;
+    font-size: 28px;
+    justify-content: left;
+    align-items: center;
     padding: 0;
     margin: 0;
     color: #41469D;
     border-bottom: none;
     gap: 5px;
 }
+.timer p {
+    margin-right: -3px;
+    font-size: 30px;
 
-.fee-title {
+
+}
+
+.timer-title {
     color: #0A273B;
 }
 

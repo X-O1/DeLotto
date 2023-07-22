@@ -1,9 +1,12 @@
 /** IMPORTS  */
 const { ethers, BigNumber } = require("ethers");
 
-/** ETHERS.JS GLOBAL VARIABLES */
+/** GLOBAL VARIABLES */
 const provider = new ethers.providers.Web3Provider(window.ethereum);
 const signer = provider.getSigner();
+let hours;
+let minutes;
+let seconds;
 
 /** SOLIDITY CONTRACTS */
 const LOTTERY_CONTRACT = {
@@ -245,6 +248,9 @@ const closeLog = document.querySelector(".close-log");
 const lotteryLog = document.querySelector(".lottery-log");
 const amountWonContainer = document.querySelector(".amount-won");
 const recentWinnerTitle = document.querySelector(".recent-winner-title");
+const hoursContaienr = document.querySelector(".timer .hours");
+const minutesContainer = document.querySelector(".timer .minutes");
+const secondsContaienr = document.querySelector(".timer .seconds");
 
 // THESE FUNCTIONS WILL RUN EVERYTIME THE SITE LOADS
 window.onload = () => {
@@ -391,6 +397,41 @@ const listenForLotteryWinner = () => {
     toggleLog.style.display = "none";
     closeLog.style.display = "flex";
   });
+};
+
+// Timer countdown
+const startTimer = async () => {
+  let hours = 24;
+  let minutes = 60;
+  let seconds = 60;
+  const contract = new contract.ethers.Contract(
+    LOTTERY_CONTRACT.address,
+    LOTTERY_CONTRACT.abi,
+    provider
+  );
+  // if (getListOfPlayers().length === 1) {};
+  if (seconds >= 60) {
+    const secondsCountdown = setInterval(adjustSeconds, 1000);
+  }
+  if (seconds === 0) {
+    adjustMinutes();
+    seconds = 60;
+  }
+  if (minutes === 0) {
+    adjustHours();
+    minutes = 60;
+  }
+  contract.on("WinnerSelected", () => {});
+};
+
+const adjustHours = () => {
+  hours--;
+};
+const adjustMinutes = () => {
+  minutes--;
+};
+const adjustSeconds = () => {
+  seconds--;
 };
 
 // Lottery Log display
