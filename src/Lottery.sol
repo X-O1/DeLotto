@@ -37,7 +37,6 @@ contract Lottery is VRFConsumerBaseV2 {
 
     address payable[] private s_players;
     mapping(address => uint256) private s_playersEntryDeposit;
-    mapping(address => bool) private s_hasEntered;
     LotteryState private s_lotteryState;
     address private s_recentWinner;
     uint256 private s_numberOfLotteryRounds;
@@ -70,13 +69,12 @@ contract Lottery is VRFConsumerBaseV2 {
     function enterLottery() public payable {
         require(s_lotteryState == LotteryState.OPEN, "Lottery is not open.");
         require(
-            !s_hasEntered[msg.sender],
+            Lottery.getIfPlayerHasEntered() == false,
             "This address was already used. 1 entry per address."
         );
         require(msg.sender != i_owner, "Contract owner can not enter lottery.");
         require(msg.value >= i_entryFee, "Not enough Eth deposited!");
 
-        s_hasEntered[msg.sender] = true;
         s_playersEntryDeposit[msg.sender] += msg.value;
         s_players.push(payable(msg.sender));
 
@@ -130,14 +128,20 @@ contract Lottery is VRFConsumerBaseV2 {
     }
 
     /** GET FUNCTIONS */
-    function getLotteryState() external view returns (LotteryState) {
-        return s_lotteryState;
+    function getIfPlayerHasEntered() internal view returns (bool) {
+        bool playerHasEntered;
+        for (uint256 i = 0; i < s_players.length; i++) {
+            if (msg.sender == s_players[i]) {
+                playerHasEntered = true;
+            } else {
+                playerHasEntered = false;
+            }
+        }
+        return playerHasEntered;
     }
 
-    function getIfPlayerHasEntered(
-        address fundingAddress
-    ) external view returns (bool) {
-        return s_hasEntered[fundingAddress];
+    function getLotteryState() external view returns (LotteryState) {
+        return s_lotteryState;
     }
 
     function getPlayersEntryDeposit(

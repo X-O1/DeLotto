@@ -61,13 +61,6 @@ contract LotteryTest is Test {
         assert(lottery.getLotteryState() == Lottery.LotteryState.OPEN);
     }
 
-    // function testPlayerCantEnterIfLotteryStateIsCalculating() public funded {
-    //     lottery.chooseWinnner();
-    //     vm.expectRevert();
-    //     vm.prank(USER2);
-    //     lottery.enterLottery{value: SEND_VALUE}();
-    // }
-
     function testOwnerCantEnterLottery() public {
         address owner = msg.sender;
         vm.prank(owner);
@@ -87,11 +80,6 @@ contract LotteryTest is Test {
         vm.prank(USER2);
         vm.expectRevert();
         lottery.enterLottery{value: 0.001 ether}();
-    }
-
-    function testIfPlayerHasEntered() public funded {
-        bool hasPlayerEntered = lottery.getIfPlayerHasEntered(USER);
-        assertEq(hasPlayerEntered, true);
     }
 
     function testIfDataStrutureUpdates() public funded {
