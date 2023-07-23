@@ -58,7 +58,7 @@ body {
 .loto-box {
     margin: 0px auto;
     width: 45%;
-    height: 325px;
+    height: 360px;
     border: solid #E46432 1px;
     border-radius: 20px;
     display: flex;
@@ -193,7 +193,7 @@ body {
 
 .timer {
     height: 100%;
-    width: 40%;
+    width: 35%;
     border-radius: 10px 0px 0px 0px;
     display: flex;
     font-size: 28px;
@@ -208,12 +208,25 @@ body {
 .timer p {
     margin-right: -3px;
     font-size: 30px;
-
-
 }
 
 .timer-title {
     color: #0A273B;
+}
+.timer-done {
+    height: 100%;
+    width: 50%;
+    border-radius: 10px 0px 0px 0px;
+    display: flex;
+    font-size: 28px;
+    justify-content: left;
+    align-items: center;
+    padding: 0;
+    margin: 0;
+    color: #0A273B;
+    border-bottom: none;
+    gap: 5px;
+
 }
 
 /* LOTTERY LOG */

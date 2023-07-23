@@ -4,13 +4,10 @@ const { ethers, BigNumber } = require("ethers");
 /** GLOBAL VARIABLES */
 const provider = new ethers.providers.Web3Provider(window.ethereum);
 const signer = provider.getSigner();
-let hours;
-let minutes;
-let seconds;
 
 /** SOLIDITY CONTRACTS */
 const LOTTERY_CONTRACT = {
-  address: "0x2346aa2139c4c7E8d1ddc3AF81fe900D486215EF",
+  address: "0xe7f1725e7734ce288f8367e1bb143e90bb3f0512",
   abi: [
     {
       inputs: [
@@ -153,25 +150,6 @@ const LOTTERY_CONTRACT = {
       type: "function",
     },
     {
-      inputs: [
-        {
-          internalType: "address",
-          name: "fundingAddress",
-          type: "address",
-        },
-      ],
-      name: "getIfPlayerHasEntered",
-      outputs: [
-        {
-          internalType: "bool",
-          name: "",
-          type: "bool",
-        },
-      ],
-      stateMutability: "view",
-      type: "function",
-    },
-    {
       inputs: [],
       name: "getListOfPlayers",
       outputs: [
@@ -248,14 +226,17 @@ const closeLog = document.querySelector(".close-log");
 const lotteryLog = document.querySelector(".lottery-log");
 const amountWonContainer = document.querySelector(".amount-won");
 const recentWinnerTitle = document.querySelector(".recent-winner-title");
-const hoursContaienr = document.querySelector(".timer .hours");
+const hoursContainer = document.querySelector(".timer .hours");
 const minutesContainer = document.querySelector(".timer .minutes");
-const secondsContaienr = document.querySelector(".timer .seconds");
+const secondsContainer = document.querySelector(".timer .seconds");
+const timerDone = document.querySelector(".timer-done");
+const timer = document.querySelector(".timer");
 
 // THESE FUNCTIONS WILL RUN EVERYTIME THE SITE LOADS
 window.onload = () => {
   updateLotteryBalance();
   updateFrontEndOnLoad();
+  // setTimer();
 };
 
 // RETURNS LIST OF ALL PLAYERS THAT ENTERED THE CURRENT LOTTERY
@@ -400,40 +381,52 @@ const listenForLotteryWinner = () => {
 };
 
 // Timer countdown
-const startTimer = async () => {
-  let hours = 24;
-  let minutes = 60;
-  let seconds = 60;
-  const contract = new contract.ethers.Contract(
-    LOTTERY_CONTRACT.address,
-    LOTTERY_CONTRACT.abi,
-    provider
-  );
-  // if (getListOfPlayers().length === 1) {};
-  if (seconds >= 60) {
-    const secondsCountdown = setInterval(adjustSeconds, 1000);
-  }
-  if (seconds === 0) {
-    adjustMinutes();
-    seconds = 60;
-  }
-  if (minutes === 0) {
-    adjustHours();
-    minutes = 60;
-  }
-  contract.on("WinnerSelected", () => {});
-};
 
-const adjustHours = () => {
-  hours--;
-};
-const adjustMinutes = () => {
-  minutes--;
-};
-const adjustSeconds = () => {
-  seconds--;
-};
+const startTimer = () => {
+  let hours = 0;
+  let minutes = 1;
+  let seconds = 10;
+  // if (getListOfPlayers().length === 1) {
+  timer.style.display = "flex";
+  timerDone.style.display = "none";
 
+  const countdown = setInterval(() => {
+    seconds--;
+    secondsContainer.innerHTML = seconds;
+    if (seconds === 0 && minutes != 0) {
+      minutes--;
+      minutesContainer.innerHTML = minutes;
+      seconds = 10;
+      secondsContainer.innerHTML = seconds;
+    }
+    if (minutes === 0 && hours != 0) {
+      hours--;
+      minutes = 60;
+      minutesContainer.innerHTML = minutes;
+      seconds = 60;
+      secondsContainer.innerHTML = seconds;
+    }
+    if (minutes === 0 && hours === 0 && seconds === 0) {
+      clearInterval(countdown);
+      timer.style.display = "none";
+      timerDone.style.display = "flex";
+
+      timerDone.innerHTML = "Ended. Winner being selected.";
+    }
+  }, 1000);
+
+  // const contract = new contract.ethers.Contract(
+  //   LOTTERY_CONTRACT.address,
+  //   LOTTERY_CONTRACT.abi,
+  //   provider
+  // );
+
+  // contract.on("WinnerSelected", () => {
+  //   clearInterval(countdown);
+  //   resetCountdown();
+  // });
+};
+startTimer();
 // Lottery Log display
 toggleLog.addEventListener("click", () => {
   lotteryLog.style.opacity = "1";
