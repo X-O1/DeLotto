@@ -226,17 +226,13 @@ const closeLog = document.querySelector(".close-log");
 const lotteryLog = document.querySelector(".lottery-log");
 const amountWonContainer = document.querySelector(".amount-won");
 const recentWinnerTitle = document.querySelector(".recent-winner-title");
-const hoursContainer = document.querySelector(".timer .hours");
-const minutesContainer = document.querySelector(".timer .minutes");
-const secondsContainer = document.querySelector(".timer .seconds");
-const timerDone = document.querySelector(".timer-done");
 const timer = document.querySelector(".timer");
+const timerDone = document.querySelector(".timer-done");
 
 // THESE FUNCTIONS WILL RUN EVERYTIME THE SITE LOADS
 window.onload = () => {
   updateLotteryBalance();
   updateFrontEndOnLoad();
-  // setTimer();
 };
 
 // RETURNS LIST OF ALL PLAYERS THAT ENTERED THE CURRENT LOTTERY
@@ -364,6 +360,7 @@ const listenForLotteryWinner = () => {
     LOTTERY_CONTRACT.abi,
     signer
   );
+
   contract.on("WinnerSelected", (player, amountWon) => {
     let recentWinner = {
       player,
@@ -380,53 +377,6 @@ const listenForLotteryWinner = () => {
   });
 };
 
-// Timer countdown
-
-const startTimer = () => {
-  let hours = 0;
-  let minutes = 1;
-  let seconds = 10;
-  // if (getListOfPlayers().length === 1) {
-  timer.style.display = "flex";
-  timerDone.style.display = "none";
-
-  const countdown = setInterval(() => {
-    seconds--;
-    secondsContainer.innerHTML = seconds;
-    if (seconds === 0 && minutes != 0) {
-      minutes--;
-      minutesContainer.innerHTML = minutes;
-      seconds = 10;
-      secondsContainer.innerHTML = seconds;
-    }
-    if (minutes === 0 && hours != 0) {
-      hours--;
-      minutes = 60;
-      minutesContainer.innerHTML = minutes;
-      seconds = 60;
-      secondsContainer.innerHTML = seconds;
-    }
-    if (minutes === 0 && hours === 0 && seconds === 0) {
-      clearInterval(countdown);
-      timer.style.display = "none";
-      timerDone.style.display = "flex";
-
-      timerDone.innerHTML = "Ended. Winner being selected.";
-    }
-  }, 1000);
-
-  // const contract = new contract.ethers.Contract(
-  //   LOTTERY_CONTRACT.address,
-  //   LOTTERY_CONTRACT.abi,
-  //   provider
-  // );
-
-  // contract.on("WinnerSelected", () => {
-  //   clearInterval(countdown);
-  //   resetCountdown();
-  // });
-};
-startTimer();
 // Lottery Log display
 toggleLog.addEventListener("click", () => {
   lotteryLog.style.opacity = "1";

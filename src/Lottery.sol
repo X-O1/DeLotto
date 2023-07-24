@@ -40,6 +40,7 @@ contract Lottery is VRFConsumerBaseV2 {
     LotteryState private s_lotteryState;
     address private s_recentWinner;
     uint256 private s_numberOfLotteryRounds;
+    uint256 private s_winningAmount;
 
     /** Events */
     event NumOfLotteryRounds(uint256 indexed rounds);
@@ -68,10 +69,12 @@ contract Lottery is VRFConsumerBaseV2 {
     // ENTER THE LOTTERY
     function enterLottery() public payable {
         require(s_lotteryState == LotteryState.OPEN, "Lottery is not open.");
-        require(
-            Lottery.getIfPlayerHasEntered() == false,
-            "This address was already used. 1 entry per address."
-        );
+        for (uint256 i = 0; i < s_players.length; i++) {
+            require(
+                msg.sender != s_players[i],
+                "This address was already used. 1 entry per address."
+            );
+        }
         require(msg.sender != i_owner, "Contract owner can not enter lottery.");
         require(msg.value >= i_entryFee, "Not enough Eth deposited!");
 
@@ -82,7 +85,7 @@ contract Lottery is VRFConsumerBaseV2 {
     }
 
     // CHOOSE WINNER
-    function chooseWinnner() external returns (uint256 requestId) {
+    function chooseWinner() external returns (uint256 requestId) {
         require(s_players.length > 0, "No players have entered the Lottery.");
         require(address(this).balance > 0, "No funds in lottery.");
         s_lotteryState = LotteryState.CALCULATING;
@@ -104,6 +107,12 @@ contract Lottery is VRFConsumerBaseV2 {
         uint256 requestId,
         uint256[] memory randomWords
     ) internal override {
+        require(
+            s_lotteryState == LotteryState.CALCULATING,
+            "Lottery is still open."
+        );
+        require(s_players.length > 0, "No players have entered the Lottery.");
+
         // Grab winning address
         uint256 winningIndex = randomWords[0] % s_players.length;
         address payable recentWinner = s_players[winningIndex];
@@ -112,34 +121,24 @@ contract Lottery is VRFConsumerBaseV2 {
         // Reset the Lottery
         s_lotteryState = LotteryState.OPEN;
         s_players = new address payable[](0);
+        s_numberOfLotteryRounds++;
 
-        s_numberOfLotteryRounds = s_numberOfLotteryRounds++;
+        // Update winning amount
+        s_winningAmount = address(this).balance;
 
         // Emit events
-        emit WinnerSelected(recentWinner, address(this).balance);
+        emit WinnerSelected(recentWinner, s_winningAmount);
         emit NumOfLotteryRounds(s_numberOfLotteryRounds);
         emit RequestedLotteryWinner(requestId);
 
         // Send winnings
-        (bool success, ) = recentWinner.call{value: address(this).balance}("");
+        (bool success, ) = recentWinner.call{value: s_winningAmount}("");
         if (!success) {
             revert ChooseWinner_TransferFailed();
         }
     }
 
     /** GET FUNCTIONS */
-    function getIfPlayerHasEntered() internal view returns (bool) {
-        bool playerHasEntered;
-        for (uint256 i = 0; i < s_players.length; i++) {
-            if (msg.sender == s_players[i]) {
-                playerHasEntered = true;
-            } else {
-                playerHasEntered = false;
-            }
-        }
-        return playerHasEntered;
-    }
-
     function getLotteryState() external view returns (LotteryState) {
         return s_lotteryState;
     }

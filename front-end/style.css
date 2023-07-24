@@ -58,7 +58,7 @@ body {
 .loto-box {
     margin: 0px auto;
     width: 45%;
-    height: 360px;
+    height: 325px;
     border: solid #E46432 1px;
     border-radius: 20px;
     display: flex;
@@ -111,6 +111,7 @@ body {
     justify-content: center;
     align-items: center;
     width: 45%;
+    color: #0A273B;
 }
 
 .lottery-balance {
@@ -174,7 +175,7 @@ body {
     justify-content: left;
     align-items: center;
     padding: 0;
-    margin: 0 0 0 20px;
+    margin: 0 0 0 5px;
     color: #0A273B;
     border-bottom: none;
 }
@@ -197,17 +198,17 @@ body {
     border-radius: 10px 0px 0px 0px;
     display: flex;
     font-size: 28px;
-    justify-content: left;
     align-items: center;
     padding: 0;
     margin: 0;
     color: #41469D;
     border-bottom: none;
     gap: 5px;
+    flex-direction: column;
 }
 .timer p {
-    margin-right: -3px;
-    font-size: 30px;
+    margin: 0px;
+    font-size: 29px;
 }
 
 .timer-title {
@@ -217,8 +218,8 @@ body {
     height: 100%;
     width: 50%;
     border-radius: 10px 0px 0px 0px;
-    display: flex;
-    font-size: 28px;
+    display: none;
+    font-size: 29px;
     justify-content: left;
     align-items: center;
     padding: 0;
@@ -277,7 +278,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 18px;
+    font-size: 20px;
     cursor: pointer;
 }
 .close-log {

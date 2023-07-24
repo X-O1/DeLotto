@@ -28322,6 +28322,9 @@ const { ethers, BigNumber } = require("ethers");
 /** GLOBAL VARIABLES */
 const provider = new ethers.providers.Web3Provider(window.ethereum);
 const signer = provider.getSigner();
+let hours;
+let minutes;
+let seconds;
 
 /** SOLIDITY CONTRACTS */
 const LOTTERY_CONTRACT = {
@@ -28544,17 +28547,11 @@ const closeLog = document.querySelector(".close-log");
 const lotteryLog = document.querySelector(".lottery-log");
 const amountWonContainer = document.querySelector(".amount-won");
 const recentWinnerTitle = document.querySelector(".recent-winner-title");
-const hoursContainer = document.querySelector(".timer .hours");
-const minutesContainer = document.querySelector(".timer .minutes");
-const secondsContainer = document.querySelector(".timer .seconds");
-const timerDone = document.querySelector(".timer-done");
-const timer = document.querySelector(".timer");
 
 // THESE FUNCTIONS WILL RUN EVERYTIME THE SITE LOADS
 window.onload = () => {
   updateLotteryBalance();
   updateFrontEndOnLoad();
-  // setTimer();
 };
 
 // RETURNS LIST OF ALL PLAYERS THAT ENTERED THE CURRENT LOTTERY
@@ -28658,6 +28655,12 @@ const playerEnterLottery = async () => {
       const enterLotteryTransaction = await contract.enterLottery(overrides);
       await enterLotteryTransaction.wait();
 
+      //Start lottery ending countdown
+      const listOfPlayers = await contract.getListOfPlayers();
+      if (listOfPlayers.length >= 1) {
+        timerDone.style.display = "none";
+        timer.style.display = "flex";
+      }
       // Waits for a winner to be selected and then displays winner on front-end
       listenForLotteryWinner();
 
@@ -28695,56 +28698,11 @@ const listenForLotteryWinner = () => {
     lotteryLog.style.opacity = "1";
     toggleLog.style.display = "none";
     closeLog.style.display = "flex";
+
+    resetTimer();
   });
 };
 
-// Timer countdown
-
-const startTimer = () => {
-  let hours = 0;
-  let minutes = 1;
-  let seconds = 10;
-  // if (getListOfPlayers().length === 1) {
-  timer.style.display = "flex";
-  timerDone.style.display = "none";
-
-  const countdown = setInterval(() => {
-    seconds--;
-    secondsContainer.innerHTML = seconds;
-    if (seconds === 0 && minutes != 0) {
-      minutes--;
-      minutesContainer.innerHTML = minutes;
-      seconds = 10;
-      secondsContainer.innerHTML = seconds;
-    }
-    if (minutes === 0 && hours != 0) {
-      hours--;
-      minutes = 60;
-      minutesContainer.innerHTML = minutes;
-      seconds = 60;
-      secondsContainer.innerHTML = seconds;
-    }
-    if (minutes === 0 && hours === 0 && seconds === 0) {
-      clearInterval(countdown);
-      timer.style.display = "none";
-      timerDone.style.display = "flex";
-
-      timerDone.innerHTML = "Ended. Winner being selected.";
-    }
-  }, 1000);
-
-  // const contract = new contract.ethers.Contract(
-  //   LOTTERY_CONTRACT.address,
-  //   LOTTERY_CONTRACT.abi,
-  //   provider
-  // );
-
-  // contract.on("WinnerSelected", () => {
-  //   clearInterval(countdown);
-  //   resetCountdown();
-  // });
-};
-startTimer();
 // Lottery Log display
 toggleLog.addEventListener("click", () => {
   lotteryLog.style.opacity = "1";
