@@ -28546,10 +28546,13 @@ const amountWonContainer = document.querySelector(".amount-won");
 const recentWinnerTitle = document.querySelector(".recent-winner-title");
 
 // THESE FUNCTIONS WILL RUN EVERYTIME THE SITE LOADS
-window.onload = () => {
-  updateLotteryBalance();
-  updateFrontEndOnLoad();
-  listenForWinnerBeingSelected();
+const initFrontEnd = async () => {
+  await listenForWinnerBeingSelected();
+  await updateLotteryBalance();
+  await updateFrontEndOnLoad();
+};
+window.onload = async () => {
+  initFrontEnd();
 };
 
 // RETURNS LIST OF ALL PLAYERS THAT ENTERED THE CURRENT LOTTERY
@@ -28609,9 +28612,11 @@ const updateFrontEndWhenWalletChanges = async () => {
           enterLotteryButton.style.fontSize = "32px";
         } else if (accountEntered) {
           updateFrontEnd();
+          await listenForWinnerBeingSelected();
         } else {
           enterLotteryButton.innerHTML = "Enter Lottery!";
           enterLotteryButton.style.fontSize = "46px";
+          await listenForWinnerBeingSelected();
         }
       });
     } catch (error) {
@@ -28639,14 +28644,13 @@ const connect = async () => {
 
 // ENTERS PLAYER INTO THE LOTTERY
 const playerEnterLottery = async () => {
-  const contract = new ethers.Contract(
-    LOTTERY_CONTRACT.address,
-    LOTTERY_CONTRACT.abi,
-    signer
-  );
-
   if (typeof window.ethereum !== "undefined") {
     try {
+      const contract = new ethers.Contract(
+        LOTTERY_CONTRACT.address,
+        LOTTERY_CONTRACT.abi,
+        signer
+      );
       const playerAccounts = await getListOfPlayers();
       const connectedAddress = await signer.getAddress();
       const connectedAddressLowerCase = connectedAddress.toLowerCase();
@@ -28668,8 +28672,8 @@ const playerEnterLottery = async () => {
       updateFrontEnd();
 
       // Waits for a winner to be selected and then displays winner on front-end
-      listenForWinnerBeingSelected();
-      listenForLotteryWinner();
+      await listenForWinnerBeingSelected();
+      await listenForLotteryWinner();
     } catch (error) {
       error = console.log(
         "ERROR: Wallet not connected or this address has already entered the Lottery."
@@ -28687,7 +28691,7 @@ const listenForLotteryWinner = async () => {
   const contract = new ethers.Contract(
     LOTTERY_CONTRACT.address,
     LOTTERY_CONTRACT.abi,
-    signer
+    provider
   );
   try {
     contract.on("WinnerSelected", (player, amountWon) => {
@@ -28695,14 +28699,15 @@ const listenForLotteryWinner = async () => {
         player,
         amountWon,
       };
+      lotteryLog.style.opacity = "1";
+      toggleLog.style.display = "none";
+      closeLog.style.display = "flex";
+
       recentWinnerContainer.innerHTML = recentWinner.player;
       amountWonContainer.innerHTML = `Won: ${ethers.utils.formatEther(
         recentWinner.amountWon
       )} Ether!`;
 
-      lotteryLog.style.opacity = "1";
-      toggleLog.style.display = "none";
-      closeLog.style.display = "flex";
       updateLotteryBalance();
       updateFrontEndOnLoad();
     });
@@ -28722,13 +28727,46 @@ const listenForWinnerBeingSelected = async () => {
   });
 };
 
+// Function to get the most recent winner on page load
+// Function to get the most recent winner on page load
+const getMostRecentWinner = async () => {
+  const contract = new ethers.Contract(
+    LOTTERY_CONTRACT.address,
+    LOTTERY_CONTRACT.abi,
+    provider
+  );
+
+  try {
+    const eventFilter = contract.filters.WinnerSelected(null, null);
+    const events = await contract.queryFilter(eventFilter);
+
+    if (events.length > 0) {
+      const mostRecentEvent = events[events.length - 1];
+      const recentWinner = {
+        player: mostRecentEvent.args.player,
+        amountWon: mostRecentEvent.args.amountWon,
+      };
+
+      recentWinnerContainer.innerHTML = recentWinner.player;
+      amountWonContainer.innerHTML = `Won: ${ethers.utils.formatEther(
+        recentWinner.amountWon
+      )} Ether!`;
+    } else {
+      recentWinnerContainer.innerHTML = "No recent winners.";
+      amountWonContainer.innerHTML = "";
+    }
+  } catch (error) {
+    console.log("Error while fetching the most recent winner:", error);
+  }
+};
+
 // Lottery Log display
-toggleLog.addEventListener("click", () => {
+toggleLog.addEventListener("click", async () => {
+  await getMostRecentWinner();
   lotteryLog.style.opacity = "1";
   toggleLog.style.display = "none";
   closeLog.style.display = "flex";
   recentWinnerTitle.innerHTML = "Recent Winner";
-  listenForLotteryWinner();
 });
 closeLog.addEventListener("click", () => {
   lotteryLog.style.opacity = "0";
