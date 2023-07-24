@@ -28322,13 +28322,10 @@ const { ethers, BigNumber } = require("ethers");
 /** GLOBAL VARIABLES */
 const provider = new ethers.providers.Web3Provider(window.ethereum);
 const signer = provider.getSigner();
-let hours;
-let minutes;
-let seconds;
 
 /** SOLIDITY CONTRACTS */
 const LOTTERY_CONTRACT = {
-  address: "0xe7f1725e7734ce288f8367e1bb143e90bb3f0512",
+  address: "0x889bA6E45495e5aebaa522D68248cfB3125E3386",
   abi: [
     {
       inputs: [
@@ -28452,7 +28449,7 @@ const LOTTERY_CONTRACT = {
     },
     {
       inputs: [],
-      name: "chooseWinnner",
+      name: "chooseWinner",
       outputs: [
         {
           internalType: "uint256",
@@ -28552,6 +28549,7 @@ const recentWinnerTitle = document.querySelector(".recent-winner-title");
 window.onload = () => {
   updateLotteryBalance();
   updateFrontEndOnLoad();
+  listenForWinnerBeingSelected();
 };
 
 // RETURNS LIST OF ALL PLAYERS THAT ENTERED THE CURRENT LOTTERY
@@ -28649,28 +28647,34 @@ const playerEnterLottery = async () => {
 
   if (typeof window.ethereum !== "undefined") {
     try {
+      const playerAccounts = await getListOfPlayers();
+      const connectedAddress = await signer.getAddress();
+      const connectedAddressLowerCase = connectedAddress.toLowerCase();
+      const accountEntered = await playerAccounts.includes(
+        connectedAddressLowerCase
+      );
+      if (!accountEntered) {
+        enterLotteryButton.innerHTML = "ENTERING...";
+      }
+
       const overrides = {
         value: LOTTERY_CONTRACT.entryFee,
       };
       const enterLotteryTransaction = await contract.enterLottery(overrides);
       await enterLotteryTransaction.wait();
 
-      //Start lottery ending countdown
-      const listOfPlayers = await contract.getListOfPlayers();
-      if (listOfPlayers.length >= 1) {
-        timerDone.style.display = "none";
-        timer.style.display = "flex";
-      }
-      // Waits for a winner to be selected and then displays winner on front-end
-      listenForLotteryWinner();
-
       // Update front-end elements
       updateLotteryBalance();
       updateFrontEnd();
+
+      // Waits for a winner to be selected and then displays winner on front-end
+      listenForWinnerBeingSelected();
+      listenForLotteryWinner();
     } catch (error) {
       error = console.log(
         "ERROR: Wallet not connected or this address has already entered the Lottery."
       );
+      updateFrontEndOnLoad();
     }
   } else {
     walletConnectButton.innerHTML = "Please install Metamask";
@@ -28679,27 +28683,42 @@ const playerEnterLottery = async () => {
 
 /** EVENT LISTENERS */
 // Find most recent lottery winner and display it on front-end
-const listenForLotteryWinner = () => {
+const listenForLotteryWinner = async () => {
   const contract = new ethers.Contract(
     LOTTERY_CONTRACT.address,
     LOTTERY_CONTRACT.abi,
     signer
   );
-  contract.on("WinnerSelected", (player, amountWon) => {
-    let recentWinner = {
-      player,
-      amountWon,
-    };
-    recentWinnerContainer.innerHTML = recentWinner.player;
-    amountWonContainer.innerHTML = `Won: ${ethers.utils.formatEther(
-      recentWinner.amountWon
-    )} Ether!`;
+  try {
+    contract.on("WinnerSelected", (player, amountWon) => {
+      let recentWinner = {
+        player,
+        amountWon,
+      };
+      recentWinnerContainer.innerHTML = recentWinner.player;
+      amountWonContainer.innerHTML = `Won: ${ethers.utils.formatEther(
+        recentWinner.amountWon
+      )} Ether!`;
 
-    lotteryLog.style.opacity = "1";
-    toggleLog.style.display = "none";
-    closeLog.style.display = "flex";
-
-    resetTimer();
+      lotteryLog.style.opacity = "1";
+      toggleLog.style.display = "none";
+      closeLog.style.display = "flex";
+      updateLotteryBalance();
+      updateFrontEndOnLoad();
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};
+const listenForWinnerBeingSelected = async () => {
+  const contract = new ethers.Contract(
+    LOTTERY_CONTRACT.address,
+    LOTTERY_CONTRACT.abi,
+    provider
+  );
+  contract.on("RequestedLotteryWinner", async () => {
+    enterLotteryButton.innerHTML = "WINNER BEING SELECTED...";
+    enterLotteryButton.style.fontSize = "36px";
   });
 };
 
@@ -28718,7 +28737,7 @@ closeLog.addEventListener("click", () => {
 });
 
 /** MISC */
-const updateFrontEnd = () => {
+const updateFrontEnd = async () => {
   enterLotteryButton.innerHTML = "Entered! Best of Luck!";
   enterLotteryButton.style.fontSize = "39px";
 };
