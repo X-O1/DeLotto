@@ -17,8 +17,6 @@ body {
     text-align: center;
 }
 
-
-
 .wallet {
     font-family: 'VT323', monospace;
     background: none;
@@ -52,7 +50,6 @@ body {
     flex-direction: column;
     justify-content: center;
     box-sizing: border-box;
-
 }
 
 .loto-box {
@@ -89,7 +86,6 @@ body {
     width: 30%;
     display: none;
 }
-
 
 .status-title {
     color: #0A273B;
@@ -197,6 +193,7 @@ body {
     color: #41469D;
     display: none;
 }
+
 .toggle-rules {
     margin: 0 auto 10px;
     height: 20px;
@@ -210,8 +207,10 @@ body {
     align-items: center;
     font-size: 17.5px;
     cursor: pointer;
-    border: #E46432 solid 1px;
+    border: #E46432 solid .1px;
+    box-shadow: 0 1px #E46432;
 }
+
 .close-rules {
     margin: 0 auto 10px;
     height: 20px;
@@ -225,7 +224,15 @@ body {
     align-items: center;
     font-size: 18px;
     cursor: pointer;
-    border: #E46432 solid 1px;
+    border: #E46432 solid .1px;
+    box-shadow: 0 1px #E46432;
+}
+
+.toggle-rules:active,
+.close-rules:active {
+    transform: translateY(1px);
+    box-shadow: 0 0px #E46432;
+    border: none;
 }
 
 .timer {
@@ -272,7 +279,6 @@ body {
 
 .recent-winner-title {
     font-size: 25px;
-
 }
 
 .recent-winner {
@@ -331,12 +337,10 @@ body {
 /* CSS styles for desktop and general styles */
 
 /* Apply styles for tablet devices (portrait orientation) */
-@media screen and (max-width: 768px) {
-}
+@media screen and (max-width: 768px) {}
 
 /* Apply styles for mobile devices */
-@media screen and (max-width: 480px) {
-}
+@media screen and (max-width: 480px) {}
 
 /* Apply styles for larger devices (desktops, laptops) */
 @media screen and (min-width: 1200px) {
@@ -344,44 +348,51 @@ body {
         padding-top: 60px;
         margin-bottom: 60px;
     }
+
     .main-container {
         max-width: 500px;
-    
     }
+
     .enter-lottery-button {
         width: 90%;
         font-size: 36px;
     }
+
     .lottery-balance-title {
         font-size: 28px;
     }
-    .wallet {
-    font-size: 30px;
-    margin-right: 80px;
 
+    .wallet {
+        font-size: 30px;
+        margin-right: 80px;
     }
+
     .recent-winner-title {
         font-size: 34px;
-    
     }
+
     .recent-winner {
         font-size: 60px;
     }
-    
+
     .amount-won {
         font-size: 60px;
     }
+
     .timer-title {
         font-size: 25px;
     }
+
     .timer p {
         font-size: 28px;
     }
+
     .toggle-rules,
     .close-rules {
         padding: 5px 10px;
         font-size: 18px;
     }
+
     .rule-list {
         padding-left: 50px;
         font-size: 20px;

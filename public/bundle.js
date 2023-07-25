@@ -28605,8 +28605,10 @@ const updateFrontEndOnLoad = async () => {
       error = console.log("ERROR: No wallet is Connected.");
     }
   } else {
-    walletConnectButton.innerHTML = "Please install Metamask";
-    enterLotteryButton.innerHTML = "Please install Metamask";
+    walletConnectButton.innerHTML = "Install Metamask to Connect";
+    enterLotteryButton.innerHTML = "Install Metamask to Enter";
+    lotteryBalance.innerHTML = "Connect to View";
+    lotteryBalance.style.fontSize = "20px";
   }
 };
 
@@ -28656,7 +28658,7 @@ const connect = async () => {
       console.log(error);
     }
   } else {
-    walletConnectButton.innerHTML = "Please install MetaMask";
+    walletConnectButton.innerHTML = "Please Install MetaMask";
   }
 };
 
@@ -28701,7 +28703,7 @@ const playerEnterLottery = async () => {
       updateFrontEndOnLoad();
     }
   } else {
-    walletConnectButton.innerHTML = "Please install Metamask";
+    walletConnectButton.innerHTML = "Please Install Metamask";
   }
 };
 
@@ -28737,7 +28739,7 @@ const listenForLotteryWinner = async () => {
       console.log(error);
     }
   } else {
-    walletConnectButton.innerHTML = "Please install Metamask";
+    walletConnectButton.innerHTML = "Please Install Metamask";
   }
 };
 const listenForWinnerBeingSelected = async () => {
@@ -28755,7 +28757,7 @@ const listenForWinnerBeingSelected = async () => {
       updateLotteryBalance();
     });
   } else {
-    walletConnectButton.innerHTML = "Please install Metamask";
+    walletConnectButton.innerHTML = "Please Install Metamask";
   }
 };
 
@@ -28792,7 +28794,7 @@ const getMostRecentWinner = async () => {
       console.log("Error while fetching the most recent winner:", error);
     }
   } else {
-    walletConnectButton.innerHTML = "Please install Metamask";
+    walletConnectButton.innerHTML = "Please Install Metamask";
   }
 };
 
@@ -28815,7 +28817,7 @@ toggleLog.addEventListener("click", async () => {
   closeLog.style.display = "flex";
   typeof window.ethereum !== "undefined"
     ? (recentWinnerTitle.innerHTML = "Recent Winner")
-    : (recentWinnerTitle.innerHTML = "Please install Metamask");
+    : (recentWinnerTitle.innerHTML = "Install Metamask to View");
 });
 closeLog.addEventListener("click", () => {
   lotteryLog.style.opacity = "0";
@@ -28840,7 +28842,7 @@ const updateLotteryBalance = async () => {
       error = console.log("ERROR: Failed to retrieve Lottery Balance.");
     }
   } else {
-    walletConnectButton.innerHTML = "Please install Metamask";
+    walletConnectButton.innerHTML = "Please Install Metamask";
   }
 };
 
