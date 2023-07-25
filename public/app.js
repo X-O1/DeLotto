@@ -234,11 +234,12 @@ const initFrontEnd = async () => {
   await updateLotteryBalance();
   await updateFrontEndOnLoad();
 };
-window.onload = async () => {
-  initFrontEnd();
+window.onload = () => {
   if (window.ethereum === undefined) {
     walletConnectButton.innerHTML = "Please install MetaMask";
     enterLotteryButton.innerHTML = "Please install MetaMask to use site";
+  } else {
+    initFrontEnd();
   }
 };
 
