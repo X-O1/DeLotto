@@ -28548,9 +28548,14 @@ const recentWinnerTitle = document.querySelector(".recent-winner-title");
 
 // THESE FUNCTIONS WILL RUN EVERYTIME THE SITE LOADS
 const initFrontEnd = async () => {
-  await listenForWinnerBeingSelected();
-  await updateLotteryBalance();
-  await updateFrontEndOnLoad();
+  if (typeof window.ethereum == undefined) {
+    walletConnectButton.innerHTML = "Please install MetaMask";
+    enterLotteryButton.innerHTML = "Please install MetaMask to use site";
+  } else {
+    await listenForWinnerBeingSelected();
+    await updateLotteryBalance();
+    await updateFrontEndOnLoad();
+  }
 };
 window.onload = async () => {
   initFrontEnd();
@@ -28637,10 +28642,10 @@ const connect = async () => {
       walletConnectButton.innerHTML = "Connected";
     } catch (error) {
       console.log(error);
-      walletConnectButton.innerHTML = "Please install MetaMask";
     }
   } else {
     walletConnectButton.innerHTML = "Please install MetaMask";
+    enterLotteryButton.innerHTML = "Please install MetaMask to use site";
   }
 };
 
