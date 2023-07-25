@@ -230,17 +230,16 @@ const recentWinnerTitle = document.querySelector(".recent-winner-title");
 
 // THESE FUNCTIONS WILL RUN EVERYTIME THE SITE LOADS
 const initFrontEnd = async () => {
-  if (typeof window.ethereum == undefined) {
-    walletConnectButton.innerHTML = "Please install MetaMask";
-    enterLotteryButton.innerHTML = "Please install MetaMask to use site";
-  } else {
-    await listenForWinnerBeingSelected();
-    await updateLotteryBalance();
-    await updateFrontEndOnLoad();
-  }
+  await listenForWinnerBeingSelected();
+  await updateLotteryBalance();
+  await updateFrontEndOnLoad();
 };
 window.onload = async () => {
   initFrontEnd();
+  if (typeof window.ethereum === undefined) {
+    walletConnectButton.innerHTML = "Please install MetaMask";
+    enterLotteryButton.innerHTML = "Please install MetaMask to use site";
+  }
 };
 
 // RETURNS LIST OF ALL PLAYERS THAT ENTERED THE CURRENT LOTTERY
