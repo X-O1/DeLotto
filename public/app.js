@@ -235,12 +235,7 @@ const initFrontEnd = async () => {
   await updateFrontEndOnLoad();
 };
 window.onload = () => {
-  if (window.ethereum === undefined) {
-    walletConnectButton.innerHTML = "Please install MetaMask";
-    enterLotteryButton.innerHTML = "Please install MetaMask to use site";
-  } else {
-    initFrontEnd();
-  }
+  initFrontEnd();
 };
 
 // RETURNS LIST OF ALL PLAYERS THAT ENTERED THE CURRENT LOTTERY
@@ -318,7 +313,7 @@ updateFrontEndWhenWalletChanges();
 
 // CONNECTS SITE TO A NODE (METAMASK)
 const connect = async () => {
-  if (typeof window.ethereum !== "undefined") {
+  if (typeof window.ethereum !== undefined) {
     try {
       await ethereum.request({ method: "eth_requestAccounts" });
       walletConnectButton.innerHTML = "Connected";
@@ -333,7 +328,7 @@ const connect = async () => {
 
 // ENTERS PLAYER INTO THE LOTTERY
 const playerEnterLottery = async () => {
-  if (typeof window.ethereum !== "undefined") {
+  if (typeof window.ethereum !== undefined) {
     try {
       const contract = new ethers.Contract(
         LOTTERY_CONTRACT.address,
