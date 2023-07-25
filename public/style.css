@@ -12,8 +12,8 @@ body {
 /* HEADER */
 .header {
     width: 100%;
-    padding-top: 60px;
-    margin-bottom: 60px;
+    padding-top: 50px;
+    margin-bottom: 50px;
     text-align: center;
 }
 
@@ -141,7 +141,6 @@ body {
     border: #E46432 solid 1px;
     background-image: linear-gradient(to right, #0A273B 0%, #0A273B 81%, #0A273B 100%);
     margin: 10px;
-    padding: 20px 0px;
     text-align: center;
     text-transform: uppercase;
     transition: 1ms;
@@ -153,8 +152,8 @@ body {
     font-family: 'VT323', monospace;
     box-shadow: 0 5px #E46432;
     width: 100%;
-    height: 100%;
-    font-size: 31px;
+    height: 80px;
+    font-size: 30px;
 }
 
 .enter-lottery-button:hover {
@@ -272,7 +271,7 @@ body {
 }
 
 .recent-winner-title {
-    font-size: 34px;
+    font-size: 25px;
 
 }
 
@@ -331,16 +330,20 @@ body {
 
 /* CSS styles for desktop and general styles */
 
-/* Applying styles for tablet devices (portrait orientation) */
+/* Apply styles for tablet devices (portrait orientation) */
 @media screen and (max-width: 768px) {
 }
 
-/* Applying styles for mobile devices */
+/* Apply styles for mobile devices */
 @media screen and (max-width: 480px) {
 }
 
-/* Applying styles for larger devices (desktops, laptops) */
+/* Apply styles for larger devices (desktops, laptops) */
 @media screen and (min-width: 1200px) {
+    .header {
+        padding-top: 60px;
+        margin-bottom: 60px;
+    }
     .main-container {
         max-width: 500px;
     
@@ -356,6 +359,10 @@ body {
     font-size: 30px;
     margin-right: 80px;
 
+    }
+    .recent-winner-title {
+        font-size: 34px;
+    
     }
     .recent-winner {
         font-size: 60px;
