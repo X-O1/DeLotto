@@ -219,6 +219,7 @@ const LOTTERY_CONTRACT = {
 /** FRONT-END ELEMENTS */
 const walletConnectButton = document.querySelector(".wallet");
 const lotteryBalance = document.querySelector(".lottery-balance");
+const lotteryBalanceTitle = document.querySelector(".lottery-balance-title");
 const enterLotteryButton = document.querySelector(".enter-lottery-button");
 const recentWinnerContainer = document.querySelector(".recent-winner");
 const toggleLog = document.querySelector(".toggle-log");
@@ -464,9 +465,8 @@ const updateFrontEnd = async () => {
 const updateLotteryBalance = async () => {
   try {
     const balance = await provider.getBalance(LOTTERY_CONTRACT.address);
-    lotteryBalance.innerHTML = `\nLottery Balance: ${ethers.utils.formatEther(
-      balance
-    )} Ether\n`;
+    lotteryBalanceTitle.innerHTML = `Lottery Balance:`;
+    lotteryBalance.innerHTML = `${ethers.utils.formatEther(balance)} Ether\n`;
   } catch (error) {
     error = console.log("ERROR: Failed to retrieve Lottery Balance.");
   }

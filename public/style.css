@@ -114,6 +114,10 @@ body {
     color: #0A273B;
 }
 
+.lottery-balance-title {
+    color: #0A273B;
+    font-size: 28px;
+}
 .lottery-balance {
     color: #0A273B;
     font-size: 28px;
@@ -195,7 +199,7 @@ body {
 .timer {
     height: 100%;
     width: 35%;
-    border-radius: 10px 0px 0px 0px;
+    /* border-radius: 10px 0px 0px 0px; */
     display: flex;
     font-size: 28px;
     align-items: center;
@@ -214,21 +218,7 @@ body {
 .timer-title {
     color: #0A273B;
 }
-.timer-done {
-    height: 100%;
-    width: 50%;
-    border-radius: 10px 0px 0px 0px;
-    display: none;
-    font-size: 29px;
-    justify-content: left;
-    align-items: center;
-    padding: 0;
-    margin: 0;
-    color: #0A273B;
-    border-bottom: none;
-    gap: 5px;
 
-}
 
 /* LOTTERY LOG */
 .lottery-log {
