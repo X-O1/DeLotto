@@ -227,6 +227,9 @@ const closeLog = document.querySelector(".close-log");
 const lotteryLog = document.querySelector(".lottery-log");
 const amountWonContainer = document.querySelector(".amount-won");
 const recentWinnerTitle = document.querySelector(".recent-winner-title");
+const ruleList = document.querySelector(".rule-list");
+const toggleRules = document.querySelector(".toggle-rules");
+const closeRules = document.querySelector(".close-rules");
 
 // THESE FUNCTIONS WILL RUN EVERYTIME THE SITE LOADS
 const initFrontEnd = async () => {
@@ -262,7 +265,7 @@ const updateFrontEndOnLoad = async () => {
       );
       if (connectedAddress === undefined) {
         walletConnectButton.innerHTML = "Connect Wallet";
-        enterLotteryButton.innerHTML = "Connect Wallet to enter Lottery!";
+        enterLotteryButton.innerHTML = "Connect Wallet to enter!";
         enterLotteryButton.style.fontSize = "32px";
       } else if (accountEntered) {
         updateFrontEnd();
@@ -291,7 +294,7 @@ const updateFrontEndWhenWalletChanges = async () => {
 
         if (newAccounts[0] === undefined) {
           walletConnectButton.innerHTML = "Connect Wallet";
-          enterLotteryButton.innerHTML = "Connect Wallet to enter Lottery!";
+          enterLotteryButton.innerHTML = "Connect Wallet to enter!";
           enterLotteryButton.style.fontSize = "32px";
         } else if (accountEntered) {
           updateFrontEnd();
@@ -301,6 +304,7 @@ const updateFrontEndWhenWalletChanges = async () => {
           enterLotteryButton.style.fontSize = "46px";
           await listenForWinnerBeingSelected();
         }
+        updateLotteryBalance();
       });
     } catch (error) {
       error = console.log("ERROR: No wallet is Connected.");
@@ -407,6 +411,8 @@ const listenForWinnerBeingSelected = async () => {
   contract.on("RequestedLotteryWinner", async () => {
     enterLotteryButton.innerHTML = "WINNER BEING SELECTED...";
     enterLotteryButton.style.fontSize = "36px";
+
+    updateLotteryBalance();
   });
 };
 
@@ -442,6 +448,18 @@ const getMostRecentWinner = async () => {
   }
 };
 
+// Toggle Rules Display
+toggleRules.addEventListener("click", () => {
+  ruleList.style.display = "block";
+  closeRules.style.display = "flex";
+  toggleRules.style.display = "none";
+});
+closeRules.addEventListener("click", () => {
+  ruleList.style.display = "none";
+  closeRules.style.display = "none";
+  toggleRules.style.display = "flex";
+});
+
 // Lottery Log display
 toggleLog.addEventListener("click", async () => {
   await getMostRecentWinner();
@@ -465,7 +483,7 @@ const updateFrontEnd = async () => {
 const updateLotteryBalance = async () => {
   try {
     const balance = await provider.getBalance(LOTTERY_CONTRACT.address);
-    lotteryBalanceTitle.innerHTML = `Lottery Balance:`;
+    lotteryBalanceTitle.innerHTML = `Lottery Prize`;
     lotteryBalance.innerHTML = `${ethers.utils.formatEther(balance)} Ether\n`;
   } catch (error) {
     error = console.log("ERROR: Failed to retrieve Lottery Balance.");

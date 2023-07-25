@@ -6,7 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DeLotto</title>
     <link rel="stylesheet" type="text/css" href="style.css">
-    <link rel="stylesheet" type="text/css" href="mobile.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
@@ -15,10 +14,13 @@
 </head>
 
 <body>
-    <header class="header">
-        <div class="logo">DeLotto</div>
+    <section class="wallet-container">
         <button class="wallet" onclick="bundle.connect()">Connect Wallet
         </button>
+    </section>
+
+    <header class="header">
+        <div class="logo">DeLotto</div>
     </header>
     <section class="main-container">
         <div class="loto-box">
@@ -28,20 +30,24 @@
                     <div class="status-light"></div>
                 </div>
                 <div class="lottery-balance-container">
-                    <p class="lottery-balance-title"></p>
-                    <p class="lottery-balance"></p>
+                    <p class="lottery-balance-title">Lottery Prize</p>
+                    <p class="lottery-balance">0.0 Ether</p>
                 </div>
             </div>
             <div class="middle-row">
                 <button class="enter-lottery-button" onclick="bundle.playerEnterLottery()">Connect
-                    Wallet to enter Lottery!</button>
+                    Wallet to enter!</button>
             </div>
             <div class="bottom-row">
                 <div class="rules">
+                    <div class="toggle-rules">Click to View Rules</div>
+                    <div class="close-rules">Hide Rules</div>
                     <ul class="rule-list">
-                        <li>METAMASK NEEDS TO BE INSTALLED TO USE SITE</li>
-                        <li>Entry Cost: 0.01 Ether</li>
-                        <li>1 address limit per round</li>
+                        <li>Metamask must be installed to use app.</li>
+                        <li>Must be on Sepolia Ethereum testnet</li>
+                        <li>Entry Cost: 0.01 Sepolia Eth</li>
+                        <li>1 address limit per round.</li>
+                        <li>1 Entrant wins all.</li>
                         <li>Ends/resets at set time.</li>
                     </ul>
                 </div>
@@ -50,6 +56,7 @@
                     <p class="ending-time">7:00pm UTC Daily</p>
                 </div>
             </div>
+
         </div>
         <div class="toggle-log">View Recent Winner</div>
         <div class="close-log">Close</div>
