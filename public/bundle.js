@@ -28637,6 +28637,7 @@ const connect = async () => {
       walletConnectButton.innerHTML = "Connected";
     } catch (error) {
       console.log(error);
+      walletConnectButton.innerHTML = "Please install MetaMask";
     }
   } else {
     walletConnectButton.innerHTML = "Please install MetaMask";
