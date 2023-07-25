@@ -28319,10 +28319,6 @@ utils.encode = function encode(arr, enc) {
 /** IMPORTS  */
 const { ethers, BigNumber } = require("ethers");
 
-/** GLOBAL VARIABLES */
-const provider = new ethers.providers.Web3Provider(window.ethereum);
-const signer = provider.getSigner();
-
 /** SOLIDITY CONTRACTS */
 const LOTTERY_CONTRACT = {
   address: "0x889bA6E45495e5aebaa522D68248cfB3125E3386",
@@ -28557,13 +28553,14 @@ document.addEventListener("DOMContentLoaded", async () => {
     await updateFrontEndOnLoad();
     await listenForWinnerBeingSelected();
   } catch (error) {
-    error = console.log("Install metamask");
+    console.log(error);
   }
 });
 
 // RETURNS LIST OF ALL PLAYERS THAT ENTERED THE CURRENT LOTTERY
 const getListOfPlayers = async () => {
   if (typeof window.ethereum !== "undefined") {
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
     const contract = new ethers.Contract(
       LOTTERY_CONTRACT.address,
       LOTTERY_CONTRACT.abi,
@@ -28580,6 +28577,8 @@ const getListOfPlayers = async () => {
 const updateFrontEndOnLoad = async () => {
   if (typeof window.ethereum !== "undefined") {
     try {
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const signer = provider.getSigner();
       const playerAccounts = await getListOfPlayers();
       const connectedAddress = await signer.getAddress();
       const connectedAddressLowerCase = connectedAddress.toLowerCase();
@@ -28607,6 +28606,7 @@ const updateFrontEndOnLoad = async () => {
     }
   } else {
     walletConnectButton.innerHTML = "Please install Metamask";
+    enterLotteryButton.innerHTML = "Please install Metamask";
   }
 };
 
@@ -28664,6 +28664,8 @@ const connect = async () => {
 const playerEnterLottery = async () => {
   if (typeof window.ethereum !== "undefined") {
     try {
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const signer = provider.getSigner();
       const contract = new ethers.Contract(
         LOTTERY_CONTRACT.address,
         LOTTERY_CONTRACT.abi,
@@ -28707,6 +28709,7 @@ const playerEnterLottery = async () => {
 // Find most recent lottery winner and display it on front-end
 const listenForLotteryWinner = async () => {
   if (typeof window.ethereum !== "undefined") {
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
     const contract = new ethers.Contract(
       LOTTERY_CONTRACT.address,
       LOTTERY_CONTRACT.abi,
@@ -28739,6 +28742,7 @@ const listenForLotteryWinner = async () => {
 };
 const listenForWinnerBeingSelected = async () => {
   if (typeof window.ethereum !== "undefined") {
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
     const contract = new ethers.Contract(
       LOTTERY_CONTRACT.address,
       LOTTERY_CONTRACT.abi,
@@ -28758,6 +28762,7 @@ const listenForWinnerBeingSelected = async () => {
 // Function to get the most recent winner on command
 const getMostRecentWinner = async () => {
   if (typeof window.ethereum !== "undefined") {
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
     const contract = new ethers.Contract(
       LOTTERY_CONTRACT.address,
       LOTTERY_CONTRACT.abi,
@@ -28808,7 +28813,9 @@ toggleLog.addEventListener("click", async () => {
   lotteryLog.style.opacity = "1";
   toggleLog.style.display = "none";
   closeLog.style.display = "flex";
-  recentWinnerTitle.innerHTML = "Recent Winner";
+  typeof window.ethereum !== "undefined"
+    ? (recentWinnerTitle.innerHTML = "Recent Winner")
+    : (recentWinnerTitle.innerHTML = "Please install Metamask");
 });
 closeLog.addEventListener("click", () => {
   lotteryLog.style.opacity = "0";
@@ -28825,6 +28832,7 @@ const updateFrontEnd = async () => {
 const updateLotteryBalance = async () => {
   if (typeof window.ethereum !== "undefined") {
     try {
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
       const balance = await provider.getBalance(LOTTERY_CONTRACT.address);
       lotteryBalanceTitle.innerHTML = `Lottery Prize`;
       lotteryBalance.innerHTML = `${ethers.utils.formatEther(balance)} Ether\n`;
