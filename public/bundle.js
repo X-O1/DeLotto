@@ -28665,20 +28665,20 @@ const connect = async () => {
 // ENTERS PLAYER INTO THE LOTTERY
 const playerEnterLottery = async () => {
   if (typeof window.ethereum !== "undefined") {
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    const signer = provider.getSigner();
+    const contract = new ethers.Contract(
+      LOTTERY_CONTRACT.address,
+      LOTTERY_CONTRACT.abi,
+      signer
+    );
+    const playerAccounts = await getListOfPlayers();
+    const connectedAddress = await signer.getAddress();
+    const connectedAddressLowerCase = connectedAddress.toLowerCase();
+    const accountEntered = await playerAccounts.includes(
+      connectedAddressLowerCase
+    );
     try {
-      const provider = new ethers.providers.Web3Provider(window.ethereum);
-      const signer = provider.getSigner();
-      const contract = new ethers.Contract(
-        LOTTERY_CONTRACT.address,
-        LOTTERY_CONTRACT.abi,
-        signer
-      );
-      const playerAccounts = await getListOfPlayers();
-      const connectedAddress = await signer.getAddress();
-      const connectedAddressLowerCase = connectedAddress.toLowerCase();
-      const accountEntered = await playerAccounts.includes(
-        connectedAddressLowerCase
-      );
       if (!accountEntered) {
         enterLotteryButton.innerHTML = "ENTERING...";
       }
@@ -28718,8 +28718,10 @@ const listenForLotteryWinner = async () => {
       provider
     );
     try {
-      contract.on("WinnerSelected", (player, amountWon) => {
-        let recentWinner = {
+      contract.on("WinnerSelected", async (player, amountWon) => {
+        await updateFrontEndOnLoad();
+        await updateLotteryBalance();
+        const recentWinner = {
           player,
           amountWon,
         };
@@ -28731,9 +28733,6 @@ const listenForLotteryWinner = async () => {
         amountWonContainer.innerHTML = `Won: ${ethers.utils.formatEther(
           recentWinner.amountWon
         )} Ether!`;
-
-        updateLotteryBalance();
-        updateFrontEndOnLoad();
       });
     } catch (error) {
       console.log(error);
@@ -28750,12 +28749,16 @@ const listenForWinnerBeingSelected = async () => {
       LOTTERY_CONTRACT.abi,
       provider
     );
-    contract.on("RequestedLotteryWinner", async () => {
-      enterLotteryButton.innerHTML = "WINNER BEING SELECTED...";
-      enterLotteryButton.style.fontSize = "36px";
+    try {
+      contract.on("RequestedLotteryWinner", async () => {
+        enterLotteryButton.innerHTML = "WINNER BEING SELECTED...";
+        enterLotteryButton.style.fontSize = "36px";
 
-      updateLotteryBalance();
-    });
+        updateLotteryBalance();
+      });
+    } catch (error) {
+      console.log("Error while listening for winner.");
+    }
   } else {
     walletConnectButton.innerHTML = "Please Install Metamask";
   }
@@ -28770,11 +28773,9 @@ const getMostRecentWinner = async () => {
       LOTTERY_CONTRACT.abi,
       provider
     );
-
+    const eventFilter = contract.filters.WinnerSelected(null, null);
+    const events = await contract.queryFilter(eventFilter);
     try {
-      const eventFilter = contract.filters.WinnerSelected(null, null);
-      const events = await contract.queryFilter(eventFilter);
-
       if (events.length > 0) {
         const mostRecentEvent = events[events.length - 1];
         const recentWinner = {
