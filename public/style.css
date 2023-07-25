@@ -37,6 +37,9 @@ body {
     cursor: pointer;
     width: 12%;
 }
+.wallet:active {
+    transform: translateY(4px);
+}
 .logo {
     font-size: 34px;
 }

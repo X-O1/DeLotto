@@ -238,6 +238,8 @@ window.onload = () => {
   initFrontEnd();
 };
 
+// Call the function after the page has loaded
+checkAndDisplayMetamaskMessage;
 // RETURNS LIST OF ALL PLAYERS THAT ENTERED THE CURRENT LOTTERY
 const getListOfPlayers = async () => {
   const contract = new ethers.Contract(
@@ -277,6 +279,7 @@ const updateFrontEndOnLoad = async () => {
     }
   } else {
     walletConnectButton.innerHTML = "Please install Metamask";
+    checkAndDisplayMetamaskMessage();
   }
 };
 
