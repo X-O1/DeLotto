@@ -236,7 +236,7 @@ const initFrontEnd = async () => {
 };
 window.onload = async () => {
   initFrontEnd();
-  if (typeof window.ethereum === "undefined") {
+  if (window.ethereum === undefined) {
     walletConnectButton.innerHTML = "Please install MetaMask";
     enterLotteryButton.innerHTML = "Please install MetaMask to use site";
   }
