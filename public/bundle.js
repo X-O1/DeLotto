@@ -28592,7 +28592,7 @@ const updateFrontEndOnLoad = async () => {
           ? (enterLotteryButton.style.fontSize = "36px")
           : (enterLotteryButton.style.fontSize = "30px");
       } else if (accountEntered) {
-        updateFrontEnd();
+        updateEnterLotteryButtonDisplay();
         walletConnectButton.innerHTML = "Connected";
       } else {
         enterLotteryButton.innerHTML = "Enter Lottery!";
@@ -28628,7 +28628,7 @@ const updateFrontEndWhenWalletChanges = async () => {
             ? (enterLotteryButton.style.fontSize = "36px")
             : (enterLotteryButton.style.fontSize = "30px");
         } else if (accountEntered) {
-          updateFrontEnd();
+          updateEnterLotteryButtonDisplay();
           await listenForWinnerBeingSelected();
         } else {
           enterLotteryButton.innerHTML = "Enter Lottery!";
@@ -28691,7 +28691,7 @@ const playerEnterLottery = async () => {
 
       // Update front-end elements
       updateLotteryBalance();
-      updateFrontEnd();
+      updateEnterLotteryButtonDisplay();
 
       // Waits for a winner to be selected and then displays winner on front-end
       await listenForWinnerBeingSelected();
@@ -28827,9 +28827,11 @@ closeLog.addEventListener("click", () => {
 });
 
 /** MISC */
-const updateFrontEnd = async () => {
+const updateEnterLotteryButtonDisplay = async () => {
   enterLotteryButton.innerHTML = "Entered! Best of Luck!";
-  enterLotteryButton.style.fontSize = "39px";
+  mediaQuery.matches
+    ? (enterLotteryButton.style.fontSize = "39px")
+    : (enterLotteryButton.style.fontSize = "34px");
 };
 
 const updateLotteryBalance = async () => {
@@ -28852,7 +28854,7 @@ module.exports = {
   connect,
   playerEnterLottery,
   getListOfPlayers,
-  updateFrontEnd,
+  updateEnterLotteryButtonDisplay,
   updateLotteryBalance,
   updateFrontEndWhenWalletChanges,
   updateFrontEndOnLoad,
