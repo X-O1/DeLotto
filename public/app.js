@@ -512,8 +512,8 @@ closeLog.addEventListener("click", () => {
 const updateEnterLotteryButtonDisplay = async () => {
   enterLotteryButton.innerHTML = "Entered! Best of Luck!";
   mediaQuery.matches
-    ? (enterLotteryButton.style.fontSize = "39px")
-    : (enterLotteryButton.style.fontSize = "32px");
+    ? (enterLotteryButton.style.fontSize = "32px")
+    : (enterLotteryButton.style.fontSize = "39px");
 };
 
 const updateLotteryBalance = async () => {
