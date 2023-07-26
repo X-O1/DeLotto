@@ -413,7 +413,7 @@ body {
 /* Styles for tiny phones*/
 @media screen and (min-width: 287px) and (max-width: 329px) {
     .enter-lottery-button {
-        font-size: 34px;
+        font-size: 30px;
         width: 100%;
         height: 70px;
     }

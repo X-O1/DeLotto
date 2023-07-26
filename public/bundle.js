@@ -28717,7 +28717,7 @@ const playerEnterLottery = async () => {
 
       // Update front-end elements
       await updateLotteryBalance();
-      await updateEnterLotteryButtonDisplay();
+      updateEnterLotteryButtonDisplay();
 
       // Waits for a winner to be selected and then displays winner on front-end
       listenForWinnerBeingSelected();
@@ -28861,7 +28861,7 @@ closeLog.addEventListener("click", () => {
 });
 
 /** MISC */
-const updateEnterLotteryButtonDisplay = async () => {
+const updateEnterLotteryButtonDisplay = () => {
   enterLotteryButton.innerHTML = "Entered! Good Luck!";
   try {
     if (mediaBrowser.matches) {
