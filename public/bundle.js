@@ -28544,15 +28544,23 @@ const recentWinnerTitle = document.querySelector(".recent-winner-title");
 const ruleList = document.querySelector(".rule-list");
 const toggleRules = document.querySelector(".toggle-rules");
 const closeRules = document.querySelector(".close-rules");
-const mediaQueryBrowser = window.matchMedia("(min-width: 1200px)");
-const mediaQueryPhone = window.matchMedia("(max-width: 350px)");
+const mediaBrowser = window.matchMedia("(min-width: 768px)");
+const mediaPhone = window.matchMedia(
+  "(min-width: 400px) and (max-width: 767px)"
+);
+const mediaSmallPhone = window.matchMedia(
+  "(min-width: 330px) and (max-width: 399px)"
+);
+const mediaTinyPhone = window.matchMedia(
+  "(min-width: 287px) and (max-width: 329px)"
+);
 
 // THESE FUNCTIONS WILL RUN EVERYTIME THE SITE LOADS
-document.addEventListener("DOMContentLoaded", async () => {
+document.addEventListener("DOMContentLoaded", () => {
   try {
-    await updateLotteryBalance();
-    await updateFrontEndOnLoad();
-    await listenForWinnerBeingSelected();
+    updateLotteryBalance();
+    updateFrontEndOnLoad();
+    listenForWinnerBeingSelected();
   } catch (error) {
     console.log(error);
   }
@@ -28577,37 +28585,40 @@ const getListOfPlayers = async () => {
 // UPDATES FRONT-END ON PAGE RELOAD BASED ON CURRENT WALLET CONNECTED
 const updateFrontEndOnLoad = async () => {
   if (typeof window.ethereum !== "undefined") {
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    const signer = provider.getSigner();
+    const playerAccounts = await getListOfPlayers();
+    const connectedAddress = await signer.getAddress();
+    const connectedAddressLowerCase = connectedAddress.toLowerCase();
+    const accountEntered = await playerAccounts.includes(
+      connectedAddressLowerCase
+    );
     try {
-      const provider = new ethers.providers.Web3Provider(window.ethereum);
-      const signer = provider.getSigner();
-      const playerAccounts = await getListOfPlayers();
-      const connectedAddress = await signer.getAddress();
-      const connectedAddressLowerCase = connectedAddress.toLowerCase();
-      const accountEntered = await playerAccounts.includes(
-        connectedAddressLowerCase
-      );
       if (connectedAddress === undefined) {
         walletConnectButton.innerHTML = "Connect Wallet";
-        enterLotteryButton.innerHTML = "Connect Wallet to enter!";
-        mediaQueryBrowser.matches
-          ? (enterLotteryButton.style.fontSize = "36px")
-          : (enterLotteryButton.style.fontSize = "30px");
+        enterLotteryButton.innerHTML = "Connect to enter!";
       } else if (accountEntered) {
-        updateEnterLotteryButtonDisplay();
+        await updateEnterLotteryButtonDisplay();
         walletConnectButton.innerHTML = "Connected";
-      } else {
+      } else if (connectedAddress !== undefined && !accountEntered) {
+        walletConnectButton.innerHTML = "Connected";
         enterLotteryButton.innerHTML = "Enter Lottery!";
-        mediaQueryBrowser.matches
-          ? (enterLotteryButton.style.fontSize = "46px")
-          : (enterLotteryButton.style.fontSize = "42px");
-        walletConnectButton.innerHTML = "Connected";
+        if (mediaBrowser.matches) {
+          enterLotteryButton.style.fontSize = "46px";
+        } else if (mediaPhone.matches) {
+          enterLotteryButton.style.fontSize = "42px";
+        } else if (mediaSmallPhone.matches) {
+          enterLotteryButton.style.fontSize = "36px";
+        } else if (mediaTinyPhone.matches) {
+          enterLotteryButton.style.fontSize = "30px";
+        }
       }
     } catch (error) {
       error = console.log("ERROR: No wallet is Connected.");
     }
   } else {
     walletConnectButton.innerHTML = "Install Metamask to Connect";
-    enterLotteryButton.innerHTML = "Install Metamask to Enter";
+    enterLotteryButton.innerHTML = "Install Metamask";
     lotteryBalance.innerHTML = "Connect to View";
     lotteryBalance.style.fontSize = "20px";
   }
@@ -28617,26 +28628,40 @@ const updateFrontEndOnLoad = async () => {
 const updateFrontEndWhenWalletChanges = async () => {
   if (typeof window.ethereum !== "undefined") {
     try {
-      ethereum.on("accountsChanged", async (newAccounts) => {
-        const playerAccounts = await getListOfPlayers();
-        const accountEntered = await playerAccounts.includes(newAccounts[0]);
+      const playerAccounts = await getListOfPlayers();
+      ethereum.on("accountsChanged", (newAccounts) => {
+        const accountEntered = playerAccounts.includes(newAccounts[0]);
         console.log("Accounts changed", newAccounts[0]);
 
         if (newAccounts[0] === undefined) {
           walletConnectButton.innerHTML = "Connect Wallet";
-          enterLotteryButton.innerHTML = "Connect Wallet to enter!";
-          mediaQueryBrowser.matches
-            ? (enterLotteryButton.style.fontSize = "36px")
-            : (enterLotteryButton.style.fontSize = "30px");
+          enterLotteryButton.innerHTML = "Connect to enter!";
+
+          if (mediaBrowser.matches) {
+            enterLotteryButton.style.fontSize = "43px";
+          } else if (mediaPhone.matches) {
+            enterLotteryButton.style.fontSize = "39px";
+          } else if (mediaSmallPhone.matches) {
+            enterLotteryButton.style.fontSize = "36px";
+          } else if (mediaTinyPhone.matches) {
+            enterLotteryButton.style.fontSize = "30px";
+          }
         } else if (accountEntered) {
-          await updateEnterLotteryButtonDisplay();
-          await listenForWinnerBeingSelected();
+          updateEnterLotteryButtonDisplay();
+          listenForWinnerBeingSelected();
         } else {
           enterLotteryButton.innerHTML = "Enter Lottery!";
-          mediaQueryBrowser.matches
-            ? (enterLotteryButton.style.fontSize = "46px")
-            : (enterLotteryButton.style.fontSize = "42px");
-          await listenForWinnerBeingSelected();
+          if (mediaBrowser.matches) {
+            enterLotteryButton.style.fontSize = "46px";
+          } else if (mediaPhone.matches) {
+            enterLotteryButton.style.fontSize = "42px";
+          } else if (mediaSmallPhone.matches) {
+            enterLotteryButton.style.fontSize = "36px";
+          } else if (mediaTinyPhone.matches) {
+            enterLotteryButton.style.fontSize = "30px";
+          }
+
+          listenForWinnerBeingSelected();
         }
         updateLotteryBalance();
       });
@@ -28691,12 +28716,12 @@ const playerEnterLottery = async () => {
       await enterLotteryTransaction.wait();
 
       // Update front-end elements
-      updateLotteryBalance();
-      updateEnterLotteryButtonDisplay();
+      await updateLotteryBalance();
+      await updateEnterLotteryButtonDisplay();
 
       // Waits for a winner to be selected and then displays winner on front-end
-      await listenForWinnerBeingSelected();
-      await listenForLotteryWinner();
+      listenForWinnerBeingSelected();
+      listenForLotteryWinner();
     } catch (error) {
       error = console.log(
         "ERROR: Wallet not connected or this address has already entered the Lottery."
@@ -28709,8 +28734,7 @@ const playerEnterLottery = async () => {
 };
 
 /** EVENT LISTENERS */
-// Find most recent lottery winner and display it on front-end
-const listenForLotteryWinner = async () => {
+const listenForWinnerBeingSelected = () => {
   if (typeof window.ethereum !== "undefined") {
     const provider = new ethers.providers.Web3Provider(window.ethereum);
     const contract = new ethers.Contract(
@@ -28719,9 +28743,38 @@ const listenForLotteryWinner = async () => {
       provider
     );
     try {
-      contract.on("WinnerSelected", async (player, amountWon) => {
-        await updateFrontEndOnLoad();
-        await updateLotteryBalance();
+      contract.on("RequestedLotteryWinner", () => {
+        enterLotteryButton.innerHTML = "Selecting Winner...";
+        if (mediaBrowser.matches) {
+          enterLotteryButton.style.fontSize = "46px";
+        } else if (mediaPhone.matches) {
+          enterLotteryButton.style.fontSize = "38px";
+        } else if (mediaSmallPhone.matches) {
+          enterLotteryButton.style.fontSize = "33px";
+        } else if (mediaTinyPhone.matches) {
+          enterLotteryButton.style.fontSize = "30px";
+        }
+      });
+      updateLotteryBalance();
+    } catch (error) {
+      console.log("Error while listening for winner.");
+    }
+  } else {
+    walletConnectButton.innerHTML = "Please Install Metamask";
+  }
+};
+
+// Find most recent lottery winner and display it on front-end
+const listenForLotteryWinner = () => {
+  if (typeof window.ethereum !== "undefined") {
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    const contract = new ethers.Contract(
+      LOTTERY_CONTRACT.address,
+      LOTTERY_CONTRACT.abi,
+      provider
+    );
+    try {
+      contract.on("WinnerSelected", (player, amountWon) => {
         const recentWinner = {
           player,
           amountWon,
@@ -28734,31 +28787,11 @@ const listenForLotteryWinner = async () => {
         amountWonContainer.innerHTML = `Won: ${ethers.utils.formatEther(
           recentWinner.amountWon
         )} Ether!`;
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  } else {
-    walletConnectButton.innerHTML = "Please Install Metamask";
-  }
-};
-const listenForWinnerBeingSelected = async () => {
-  if (typeof window.ethereum !== "undefined") {
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
-    const contract = new ethers.Contract(
-      LOTTERY_CONTRACT.address,
-      LOTTERY_CONTRACT.abi,
-      provider
-    );
-    try {
-      contract.on("RequestedLotteryWinner", async () => {
-        enterLotteryButton.innerHTML = "WINNER BEING SELECTED...";
-        enterLotteryButton.style.fontSize = "36px";
-
+        updateFrontEndOnLoad();
         updateLotteryBalance();
       });
     } catch (error) {
-      console.log("Error while listening for winner.");
+      console.log(error);
     }
   } else {
     walletConnectButton.innerHTML = "Please Install Metamask";
@@ -28829,14 +28862,16 @@ closeLog.addEventListener("click", () => {
 
 /** MISC */
 const updateEnterLotteryButtonDisplay = async () => {
-  enterLotteryButton.innerHTML = "Entered! Best of Luck!";
+  enterLotteryButton.innerHTML = "Entered! Good Luck!";
   try {
-    if (mediaQueryBrowser.matches) {
+    if (mediaBrowser.matches) {
+      enterLotteryButton.style.fontSize = "43px";
+    } else if (mediaPhone.matches) {
       enterLotteryButton.style.fontSize = "39px";
-    } else if (mediaQueryPhone.matches) {
+    } else if (mediaSmallPhone.matches) {
+      enterLotteryButton.style.fontSize = "33px";
+    } else if (mediaTinyPhone.matches) {
       enterLotteryButton.style.fontSize = "27px";
-    } else {
-      enterLotteryButton.style.fontSize = "32px";
     }
   } catch (error) {
     error = console.log("Error with updating lottery button display.");
