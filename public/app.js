@@ -310,7 +310,7 @@ const updateFrontEndWhenWalletChanges = async () => {
             ? (enterLotteryButton.style.fontSize = "36px")
             : (enterLotteryButton.style.fontSize = "30px");
         } else if (accountEntered) {
-          updateEnterLotteryButtonDisplay();
+          await updateEnterLotteryButtonDisplay();
           await listenForWinnerBeingSelected();
         } else {
           enterLotteryButton.innerHTML = "Enter Lottery!";
@@ -513,7 +513,7 @@ const updateEnterLotteryButtonDisplay = async () => {
   enterLotteryButton.innerHTML = "Entered! Best of Luck!";
   mediaQuery.matches
     ? (enterLotteryButton.style.fontSize = "39px")
-    : (enterLotteryButton.style.fontSize = "34px");
+    : (enterLotteryButton.style.fontSize = "32px");
 };
 
 const updateLotteryBalance = async () => {
