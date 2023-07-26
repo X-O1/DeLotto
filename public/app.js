@@ -516,7 +516,7 @@ const updateEnterLotteryButtonDisplay = async () => {
     if (mediaQueryBrowser.matches) {
       enterLotteryButton.style.fontSize = "39px";
     } else if (mediaQueryPhone.matches) {
-      enterLotteryButton.style.fontSize = "29px";
+      enterLotteryButton.style.fontSize = "27px";
     } else {
       enterLotteryButton.style.fontSize = "32px";
     }
