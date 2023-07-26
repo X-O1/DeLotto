@@ -28831,7 +28831,7 @@ const updateEnterLotteryButtonDisplay = async () => {
   enterLotteryButton.innerHTML = "Entered! Best of Luck!";
   mediaQuery.matches
     ? (enterLotteryButton.style.fontSize = "39px")
-    : (enterLotteryButton.style.fontSize = "30px");
+    : (enterLotteryButton.style.fontSize = "32px");
 };
 
 const updateLotteryBalance = async () => {
