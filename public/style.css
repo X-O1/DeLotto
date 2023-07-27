@@ -40,6 +40,7 @@ body {
     margin: auto;
 }
 
+
 /* LOTTERY BOX */
 .main-container {
     max-width: 400px;
@@ -147,9 +148,12 @@ body {
     display: block;
     font-family: 'VT323', monospace;
     box-shadow: 0 5px #E46432;
-    width: 95%;
     height: 80px;
-    font-size: 39px;
+    font-size: calc(1.25vw + 1.75rem);
+    padding: 0 40px;
+    white-space: nowrap;
+
+    
 }
 
 .enter-lottery-button:hover {
@@ -347,10 +351,10 @@ body {
     .main-container {
         max-width: 500px;
     }
-
+/* 
     .enter-lottery-button {
         font-size: 43px;
-    }
+    } */
 
     .lottery-balance-title {
         font-size: 28px;
@@ -395,35 +399,34 @@ body {
 }
 
 /* Styles for phones  */
-@media screen and (min-width: 400px) and (max-width: 767px) {
+/* @media screen and (min-width: 400px) and (max-width: 767px) {
     .enter-lottery-button {
         font-size: 39px;
         width: 100%;
     }
-}
+} */
 
 /* Styles for small phones*/
-@media screen and (min-width: 330px) and (max-width: 399px) {
+/* @media screen and (min-width: 330px) and (max-width: 399px) {
     .enter-lottery-button {
         font-size: 36px;
         width: 100%;
     }
-}
+} */
 
 /* Styles for tiny phones*/
-@media screen and (min-width: 287px) and (max-width: 329px) {
+/* @media screen and (min-width: 287px) and (max-width: 329px) {
     .enter-lottery-button {
         font-size: 30px;
         width: 100%;
         height: 70px;
     }
     
-}
+} */
 /* Galaxy Fold */
-@media screen and (max-width: 286px) {
+@media screen and (max-width: 300px) {
     .enter-lottery-button {
-        font-size: 25px;
-        width: 100%;
+        padding: 0 15px;
         height: 60px;
     }
     .wallet {

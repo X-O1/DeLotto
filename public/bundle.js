@@ -28603,15 +28603,15 @@ const updateFrontEndOnLoad = async () => {
       } else if (connectedAddress !== undefined && !accountEntered) {
         walletConnectButton.innerHTML = "Connected";
         enterLotteryButton.innerHTML = "Enter Lottery!";
-        if (mediaBrowser.matches) {
-          enterLotteryButton.style.fontSize = "46px";
-        } else if (mediaPhone.matches) {
-          enterLotteryButton.style.fontSize = "42px";
-        } else if (mediaSmallPhone.matches) {
-          enterLotteryButton.style.fontSize = "36px";
-        } else if (mediaTinyPhone.matches) {
-          enterLotteryButton.style.fontSize = "30px";
-        }
+        // if (mediaBrowser.matches) {
+        //   enterLotteryButton.style.fontSize = "46px";
+        // } else if (mediaPhone.matches) {
+        //   enterLotteryButton.style.fontSize = "42px";
+        // } else if (mediaSmallPhone.matches) {
+        //   enterLotteryButton.style.fontSize = "36px";
+        // } else if (mediaTinyPhone.matches) {
+        //   enterLotteryButton.style.fontSize = "30px";
+        // }
       }
     } catch (error) {
       error = console.log("ERROR: No wallet is Connected.");
@@ -28637,29 +28637,29 @@ const updateFrontEndWhenWalletChanges = async () => {
           walletConnectButton.innerHTML = "Connect Wallet";
           enterLotteryButton.innerHTML = "Connect to enter!";
 
-          if (mediaBrowser.matches) {
-            enterLotteryButton.style.fontSize = "43px";
-          } else if (mediaPhone.matches) {
-            enterLotteryButton.style.fontSize = "39px";
-          } else if (mediaSmallPhone.matches) {
-            enterLotteryButton.style.fontSize = "36px";
-          } else if (mediaTinyPhone.matches) {
-            enterLotteryButton.style.fontSize = "30px";
-          }
+          // if (mediaBrowser.matches) {
+          //   enterLotteryButton.style.fontSize = "43px";
+          // } else if (mediaPhone.matches) {
+          //   enterLotteryButton.style.fontSize = "39px";
+          // } else if (mediaSmallPhone.matches) {
+          //   enterLotteryButton.style.fontSize = "36px";
+          // } else if (mediaTinyPhone.matches) {
+          //   enterLotteryButton.style.fontSize = "30px";
+          // }
         } else if (accountEntered) {
           updateEnterLotteryButtonDisplay();
           listenForWinnerBeingSelected();
         } else {
           enterLotteryButton.innerHTML = "Enter Lottery!";
-          if (mediaBrowser.matches) {
-            enterLotteryButton.style.fontSize = "46px";
-          } else if (mediaPhone.matches) {
-            enterLotteryButton.style.fontSize = "42px";
-          } else if (mediaSmallPhone.matches) {
-            enterLotteryButton.style.fontSize = "36px";
-          } else if (mediaTinyPhone.matches) {
-            enterLotteryButton.style.fontSize = "30px";
-          }
+          // if (mediaBrowser.matches) {
+          //   enterLotteryButton.style.fontSize = "46px";
+          // } else if (mediaPhone.matches) {
+          //   enterLotteryButton.style.fontSize = "42px";
+          // } else if (mediaSmallPhone.matches) {
+          //   enterLotteryButton.style.fontSize = "36px";
+          // } else if (mediaTinyPhone.matches) {
+          //   enterLotteryButton.style.fontSize = "30px";
+          // }
 
           listenForWinnerBeingSelected();
         }
@@ -28745,15 +28745,15 @@ const listenForWinnerBeingSelected = () => {
     try {
       contract.on("RequestedLotteryWinner", () => {
         enterLotteryButton.innerHTML = "Selecting Winner...";
-        if (mediaBrowser.matches) {
-          enterLotteryButton.style.fontSize = "46px";
-        } else if (mediaPhone.matches) {
-          enterLotteryButton.style.fontSize = "38px";
-        } else if (mediaSmallPhone.matches) {
-          enterLotteryButton.style.fontSize = "33px";
-        } else if (mediaTinyPhone.matches) {
-          enterLotteryButton.style.fontSize = "30px";
-        }
+        // if (mediaBrowser.matches) {
+        //   enterLotteryButton.style.fontSize = "46px";
+        // } else if (mediaPhone.matches) {
+        //   enterLotteryButton.style.fontSize = "38px";
+        // } else if (mediaSmallPhone.matches) {
+        //   enterLotteryButton.style.fontSize = "33px";
+        // } else if (mediaTinyPhone.matches) {
+        //   enterLotteryButton.style.fontSize = "30px";
+        // }
       });
       updateLotteryBalance();
     } catch (error) {
@@ -28863,19 +28863,19 @@ closeLog.addEventListener("click", () => {
 /** MISC */
 const updateEnterLotteryButtonDisplay = () => {
   enterLotteryButton.innerHTML = "Entered! Good Luck!";
-  try {
-    if (mediaBrowser.matches) {
-      enterLotteryButton.style.fontSize = "43px";
-    } else if (mediaPhone.matches) {
-      enterLotteryButton.style.fontSize = "39px";
-    } else if (mediaSmallPhone.matches) {
-      enterLotteryButton.style.fontSize = "33px";
-    } else if (mediaTinyPhone.matches) {
-      enterLotteryButton.style.fontSize = "27px";
-    }
-  } catch (error) {
-    error = console.log("Error with updating lottery button display.");
-  }
+  // try {
+  //   if (mediaBrowser.matches) {
+  //     enterLotteryButton.style.fontSize = "43px";
+  //   } else if (mediaPhone.matches) {
+  //     enterLotteryButton.style.fontSize = "39px";
+  //   } else if (mediaSmallPhone.matches) {
+  //     enterLotteryButton.style.fontSize = "33px";
+  //   } else if (mediaTinyPhone.matches) {
+  //     enterLotteryButton.style.fontSize = "27px";
+  //   }
+  // } catch (error) {
+  //   error = console.log("Error with updating lottery button display.");
+  // }
 };
 
 const updateLotteryBalance = async () => {
