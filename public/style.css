@@ -56,7 +56,7 @@ body {
 .loto-box {
     margin: 0px auto;
     width: 100%;
-    border: solid #E46432 10px;
+    border: solid #E46432 1px;
     border-radius: 20px;
     display: flex;
     flex-direction: column;
