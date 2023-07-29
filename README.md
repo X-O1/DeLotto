@@ -1,5 +1,3 @@
-# About
-
 # DeLotto
 
 This is a lottery smart contract written in Solidity. Participants can enter the lottery by depositing a certain amount of Ether. Once the lottery is closed, a winner is chosen randomly using Chainlink VRF. The entire deposited amount is then sent to the winning address. After the winner is chosen, the lottery resets for the next round.
