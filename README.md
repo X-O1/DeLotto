@@ -1,3 +1,3 @@
 # About
 
-A Decentralized, Automated Lottery System.
+DeLotto is an automated smart contract lottery system.
